@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@multigames/server",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",

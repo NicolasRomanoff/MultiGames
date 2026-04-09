@@ -1,0 +1,14 @@
+{
+  "name": "multigames",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"@multigames/**\" dev",
+    "build": "pnpm --filter \"@multigames/**\" build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.13.1"
+}
