@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --parallel --filter \"@multigames/**\" dev",
-    "build": "pnpm --filter \"@multigames/**\" build"
+    "build": "pnpm --parallel --filter \"@multigames/**\" build",
+    "clear": "rm -rf node_modules & pnpm --parallel --filter \"@multigames/**\" clear"
   },
   "keywords": [],
   "author": "",
