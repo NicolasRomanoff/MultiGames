@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --parallel --filter \"@multigames/**\" dev",
-    "build": "pnpm --parallel --filter \"@multigames/**\" build",
-    "clear": "rm -rf node_modules & pnpm --parallel --filter \"@multigames/**\" clear"
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm --parallel -r build",
+    "clear": "rm -rf node_modules & pnpm --parallel -r clear"
   },
   "keywords": [],
   "author": "",
