@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "ui/components";
 
 const Homepage = () => {
   return (
@@ -6,6 +6,7 @@ const Homepage = () => {
       <Button>Chess</Button>
       <Button>Checkers</Button>
       <Button>Connect 4</Button>
+      <button>button vanille</button>
     </div>
   );
 };

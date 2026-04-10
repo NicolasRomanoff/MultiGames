@@ -30,6 +30,7 @@ export default defineConfig([
           caughtErrorsIgnorePattern: "^_",
         },
       ],
+      "react-refresh/only-export-components": "warn",
     },
     plugins: { js },
   },
