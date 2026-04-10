@@ -6,10 +6,15 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
+    "lint": "pnpm -r lint",
     "clear": "rm -rf node_modules & pnpm --parallel -r clear"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "config": "workspace:*"
+  }
 }
