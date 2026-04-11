@@ -14,7 +14,7 @@
     "./lib": {
       "import": "./src/lib/index.ts"
     },
-    "./style.css": "./src/styles/globals.css"
+    "./style.css": "./src/style.css"
   },
   "sideEffects": [
     "*.css"
