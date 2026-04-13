@@ -1,4 +1,5 @@
 import { serve } from "@hono/node-server";
+import { games } from "core/constants";
 import { Hono } from "hono";
 import { Server } from "socket.io";
 
@@ -22,8 +23,13 @@ const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   console.log("connection");
-  socket.on("chess", (msg) => {
-    console.log("chess : ", msg);
-  });
-  socket.emit("ok", "ok");
+  {
+    Object.keys(games).map((game) => {
+      return socket.on(game, (msg) => console.log(game, msg));
+    });
+  }
+  // socket.on("chess", (msg) => {
+  //   console.log("chess : ", msg);
+  // });
+  // socket.emit("ok", "ok");
 });

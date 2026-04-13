@@ -1,6 +1,7 @@
 {
   "name": "core",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,9 +12,11 @@
   "license": "ISC",
   "exports": {
     "./constants": {
+      "types": "./src/constants/index.ts",
       "import": "./src/constants/index.ts"
     },
     "./types": {
+      "types": "./src/types/index.ts",
       "import": "./src/types/index.ts"
     }
   },
