@@ -1,1 +1,1 @@
-export * from "./global.const.ts";
+export * from "./global.const.js";

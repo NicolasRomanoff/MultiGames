@@ -1,1 +1,1 @@
-export * from "./global.type.ts";
+export * from "./global.type.js";
