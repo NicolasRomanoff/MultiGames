@@ -1,0 +1,21 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clear": "rm -rf node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    "./constants": {
+      "import": "./src/constants/index.ts"
+    },
+    "./types": {
+      "import": "./src/types/index.ts"
+    }
+  },
+  "packageManager": "pnpm@10.13.1"
+}

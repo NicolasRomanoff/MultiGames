@@ -13,7 +13,9 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router": "^7.14.0",
-    "ui": "workspace:*"
+    "socket.io-client": "^4.8.3",
+    "ui": "workspace:*",
+    "core": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
