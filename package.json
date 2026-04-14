@@ -7,7 +7,8 @@
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
     "lint": "pnpm -r lint",
-    "clear": "rm -rf node_modules && pnpm --parallel -r clear"
+    "clear": "rm -rf node_modules && pnpm --parallel -r clear",
+    "test": "pnpm --parallel -r test"
   },
   "keywords": [],
   "author": "",

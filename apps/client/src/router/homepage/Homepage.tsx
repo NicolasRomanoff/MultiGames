@@ -18,7 +18,9 @@ const Homepage = () => {
       return;
     }
     socket.connect();
-    socket.emit("matchmaking", { game: onMatchmaking });
+    socket.on("connect", () => {
+      socket.emit("matchmaking", { game: onMatchmaking });
+    });
   }, [socket, onMatchmaking]);
 
   useEffect(() => {

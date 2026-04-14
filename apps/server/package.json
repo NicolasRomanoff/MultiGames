@@ -5,17 +5,20 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "clear": "rm -rf node_modules dist"
+    "clear": "rm -rf node_modules dist",
+    "test": "vitest"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
+    "core": "workspace:*",
     "hono": "^4.12.12",
-    "socket.io": "^4.8.3",
-    "core": "workspace:*"
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "socket.io-client": "^4.8.3",
     "tsx": "^4.7.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.4"
   }
 }
