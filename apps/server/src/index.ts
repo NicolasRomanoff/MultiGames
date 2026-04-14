@@ -1,5 +1,6 @@
 import { serve } from "@hono/node-server";
-import { games } from "core/constants";
+import { matchmakingSchemas } from "core/schemas";
+import { randomUUID } from "crypto";
 import { Hono } from "hono";
 import { Server } from "socket.io";
 
@@ -22,14 +23,21 @@ const httpServer = serve(
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
-  console.log("connection");
-  {
-    Object.keys(games).map((game) => {
-      return socket.on(game, (msg) => console.log(game, msg));
-    });
-  }
-  // socket.on("chess", (msg) => {
-  //   console.log("chess : ", msg);
-  // });
-  // socket.emit("ok", "ok");
+  socket.on("matchmaking", async (game) => {
+    const { data, success } = matchmakingSchemas.safeParse(game);
+    if (!success) return socket.emit("error");
+
+    await socket.join(data.game);
+    const clients = io.sockets.adapter.rooms.get(data.game);
+    if (clients && clients.size >= 2) {
+      const clientsArray = Array.from(clients);
+      const client1 = clientsArray[0];
+      const client2 = clientsArray[1];
+      io.sockets.in(client1).in(client2).socketsLeave(data.game);
+
+      const newRoom = `${data.game}-${randomUUID()}`;
+      io.sockets.in(client1).in(client2).socketsJoin(newRoom);
+      io.sockets.in(newRoom).emit("joining", newRoom);
+    }
+  });
 });

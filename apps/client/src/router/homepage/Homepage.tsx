@@ -18,8 +18,18 @@ const Homepage = () => {
       return;
     }
     socket.connect();
-    socket.emit(onMatchmaking, onMatchmaking);
+    socket.emit("matchmaking", { game: onMatchmaking });
   }, [socket, onMatchmaking]);
+
+  useEffect(() => {
+    socket.on("joining", (newRoom) => {
+      console.log("newRoom : ", newRoom);
+    });
+    return () => {
+      socket.off("joining");
+      return;
+    };
+  }, [socket]);
 
   return (
     <div className="flex w-full items-center justify-center">
