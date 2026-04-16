@@ -1,13 +1,12 @@
 import { EVENTS } from "core/constants";
 import type { Socket } from "socket.io";
+import type { ISocketHandler } from "./ISocketHandler.js";
 
-class SocketHandler {
+export class SocketHandler implements ISocketHandler {
   constructor(private readonly socket: Socket) {}
 
-  join = (room: string) => {
+  join: ISocketHandler["join"] = (room) => {
     this.socket.join(room);
     this.socket.emit(EVENTS.JOIN, room);
   };
 }
-
-export default SocketHandler;

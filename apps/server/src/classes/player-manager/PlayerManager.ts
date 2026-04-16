@@ -1,19 +1,21 @@
-import type { TGames } from "core/types";
 import { randomUUID } from "crypto";
-import type Player from "./Player.js";
+import type { IPlayer } from "../player/IPlayer.js";
+import type { IPlayerManager } from "./IPlayerManager.js";
 
-class PlayerManager {
-  private readonly players: Set<Player> = new Set();
+export class PlayerManager implements IPlayerManager {
+  private readonly players: Set<IPlayer> = new Set();
 
-  addPlayer = (player: Player) => {
+  addPlayer: IPlayerManager["addPlayer"] = (player) => {
     this.players.add(player);
   };
 
-  deletePlayer = (player: Player) => {
+  deletePlayer: IPlayerManager["deletePlayer"] = (player) => {
     this.players.delete(player);
   };
 
-  findGame = (game: TGames) => {
+  getPlayers: IPlayerManager["getPlayers"] = () => this.players;
+
+  findGame: IPlayerManager["findGame"] = (game) => {
     const arrayOfPlayers = Array.from(this.players);
     const players = arrayOfPlayers.filter(
       (player) => player.getGame() === game,
@@ -27,5 +29,3 @@ class PlayerManager {
     }
   };
 }
-
-export default PlayerManager;

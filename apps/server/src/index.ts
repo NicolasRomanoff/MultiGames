@@ -3,9 +3,9 @@ import { EVENTS } from "core/constants";
 import { matchmakingSchemas } from "core/schemas";
 import { Hono } from "hono";
 import { Server } from "socket.io";
-import Player from "./classes/Player.js";
-import PlayerManager from "./classes/PlayerManager.js";
-import SocketHandler from "./classes/SocketHandler.js";
+import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
+import { Player } from "./classes/player/Player.js";
+import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
 
 const app = new Hono();
 
