@@ -48,6 +48,14 @@ const Homepage = () => {
           </Button>
         );
       })}
+      <Button
+        onClick={() => {
+          socket.emit(EVENTS.LEAVE);
+          setOnMatchmaking(null);
+        }}
+      >
+        Cancel
+      </Button>
     </div>
   );
 };

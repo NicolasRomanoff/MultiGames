@@ -39,6 +39,10 @@ server.on("connection", (socket) => {
     playerManager.findGame(data.game);
   });
 
+  socket.on(EVENTS.LEAVE, () => {
+    playerManager.deletePlayer(player);
+  });
+
   socket.on("disconnect", () => {
     playerManager.deletePlayer(player);
   });
