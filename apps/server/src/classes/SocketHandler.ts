@@ -1,3 +1,4 @@
+import { EVENTS } from "core/constants";
 import type { Socket } from "socket.io";
 
 class SocketHandler {
@@ -5,7 +6,7 @@ class SocketHandler {
 
   join = (room: string) => {
     this.socket.join(room);
-    this.socket.emit("join", room);
+    this.socket.emit(EVENTS.JOIN, room);
   };
 }
 

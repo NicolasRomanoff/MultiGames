@@ -1,4 +1,5 @@
 import { serve } from "@hono/node-server";
+import { EVENTS } from "core/constants";
 import { matchmakingSchemas } from "core/schemas";
 import { Hono } from "hono";
 import { Server } from "socket.io";
@@ -30,7 +31,7 @@ server.on("connection", (socket) => {
   const player = new Player(socketHandler);
   playerManager.addPlayer(player);
 
-  socket.on("matchmaking", async (game) => {
+  socket.on(EVENTS.MATCHMAKING, async (game) => {
     const { data, success } = matchmakingSchemas.safeParse(game);
     if (!success) return;
 

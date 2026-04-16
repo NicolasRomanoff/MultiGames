@@ -1,4 +1,4 @@
-import { games } from "core/constants";
+import { EVENTS, games } from "core/constants";
 import type { TGames } from "core/types";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
@@ -14,14 +14,14 @@ const Homepage = () => {
 
   useEffect(() => {
     socket.on("connect", () => {
-      socket.emit("matchmaking", { game: onMatchmaking });
+      socket.emit(EVENTS.MATCHMAKING, { game: onMatchmaking });
     });
-    socket.on("join", (newRoom) => {
+    socket.on(EVENTS.JOIN, (newRoom) => {
       console.log("newRoom : ", newRoom);
     });
     return () => {
       socket.off("connect");
-      socket.off("join");
+      socket.off(EVENTS.JOIN);
       return;
     };
   }, [socket, onMatchmaking]);
