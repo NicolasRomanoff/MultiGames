@@ -13,25 +13,18 @@ const Homepage = () => {
   const [onMatchmaking, setOnMatchmaking] = useState<TGames | null>(null);
 
   useEffect(() => {
-    if (!onMatchmaking) {
-      socket.disconnect();
-      return;
-    }
-    socket.connect();
     socket.on("connect", () => {
       socket.emit("matchmaking", { game: onMatchmaking });
     });
-  }, [socket, onMatchmaking]);
-
-  useEffect(() => {
-    socket.on("joining", (newRoom) => {
+    socket.on("join", (newRoom) => {
       console.log("newRoom : ", newRoom);
     });
     return () => {
-      socket.off("joining");
+      socket.off("connect");
+      socket.off("join");
       return;
     };
-  }, [socket]);
+  }, [socket, onMatchmaking]);
 
   return (
     <div className="flex w-full items-center justify-center">
@@ -40,10 +33,16 @@ const Homepage = () => {
           <Button
             key={game}
             className={cn(onMatchmaking === game && "bg-secondary")}
-            onClick={() => {
-              if (onMatchmaking === game) setOnMatchmaking(null);
-              else setOnMatchmaking(game);
-            }}
+            onClick={
+              onMatchmaking === game
+                ? undefined
+                : () => {
+                    socket.disconnect();
+                    socket.connect();
+                    setOnMatchmaking(game);
+                  }
+            }
+            disabled={onMatchmaking === game}
           >
             {game}
           </Button>
