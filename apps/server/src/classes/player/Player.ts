@@ -1,4 +1,4 @@
-import type { TGames } from "core/types";
+import type { TGames } from "shared/types";
 import type { ISocketHandler } from "../socket-handler/ISocketHandler.js";
 import type { IPlayer } from "./IPlayer.js";
 

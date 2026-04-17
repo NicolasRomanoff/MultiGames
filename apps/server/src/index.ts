@@ -1,7 +1,7 @@
 import { serve } from "@hono/node-server";
-import { EVENTS } from "core/constants";
-import { matchmakingSchemas } from "core/schemas";
 import { Hono } from "hono";
+import { EVENTS } from "shared/constants";
+import { matchmakingSchemas } from "shared/schemas";
 import { Server } from "socket.io";
 import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
 import { Player } from "./classes/player/Player.js";

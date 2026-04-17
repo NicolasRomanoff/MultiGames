@@ -1,10 +1,11 @@
 {
-  "name": "core",
+  "name": "shared",
   "version": "1.0.0",
   "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "clear": "rm -rf node_modules"
   },
   "keywords": [],

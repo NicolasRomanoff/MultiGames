@@ -1,6 +1,6 @@
-import { EVENTS, games } from "core/constants";
-import type { TGames } from "core/types";
 import { useEffect, useState } from "react";
+import { EVENTS, games } from "shared/constants";
+import type { TGames } from "shared/types";
 import { io } from "socket.io-client";
 import { Button } from "ui/components";
 import { cn } from "ui/lib";

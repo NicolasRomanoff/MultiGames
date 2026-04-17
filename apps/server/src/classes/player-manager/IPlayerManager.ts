@@ -1,4 +1,4 @@
-import type { TGames } from "core/types";
+import type { TGames } from "shared/types";
 import type { IPlayer } from "../player/IPlayer.js";
 
 export interface IPlayerManager {

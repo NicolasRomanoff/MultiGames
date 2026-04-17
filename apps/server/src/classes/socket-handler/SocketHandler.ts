@@ -1,4 +1,4 @@
-import { EVENTS } from "core/constants";
+import { EVENTS } from "shared/constants";
 import type { Socket } from "socket.io";
 import type { ISocketHandler } from "./ISocketHandler.js";
 
