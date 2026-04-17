@@ -23,6 +23,10 @@
     "./types": {
       "types": "./src/types/index.ts",
       "import": "./src/types/index.ts"
+    },
+    "./utils": {
+      "types": "./src/utils/index.ts",
+      "import": "./src/utils/index.ts"
     }
   },
   "packageManager": "pnpm@10.13.1",

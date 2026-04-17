@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { EVENTS, games } from "shared/constants";
 import type { TGames } from "shared/types";
 import { io } from "socket.io-client";
@@ -11,20 +12,22 @@ const Homepage = () => {
     transports: ["websocket"],
   });
   const [onMatchmaking, setOnMatchmaking] = useState<TGames | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("connect", () => {
       socket.emit(EVENTS.MATCHMAKING, { game: onMatchmaking });
     });
-    socket.on(EVENTS.JOIN, (newRoom) => {
-      console.log("newRoom : ", newRoom);
+    socket.on(EVENTS.JOIN, (roomName) => {
+      console.log("roomName : ", roomName);
+      navigate(`/chess/${roomName}`);
     });
     return () => {
       socket.off("connect");
       socket.off(EVENTS.JOIN);
       return;
     };
-  }, [socket, onMatchmaking]);
+  }, [navigate, socket, onMatchmaking]);
 
   return (
     <div className="flex w-full items-center justify-center">
