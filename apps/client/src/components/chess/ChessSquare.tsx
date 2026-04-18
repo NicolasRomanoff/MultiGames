@@ -46,6 +46,7 @@ export const ChessSquare: React.FC<{
       {!!piece &&
         createElement(pieceIcons[piece], {
           color: "green",
+          className: "size-full",
         })}
     </div>
   );
