@@ -3,7 +3,7 @@ import { cn } from "ui/lib";
 import { ChessSquare } from "./ChessSquare";
 
 export const ChessBoard: React.FC<{
-  board: TBoard;
+  board: TBoard | null;
   isSecondPlayer: boolean;
 }> = ({ board, isSecondPlayer }) => {
   return (
@@ -11,7 +11,8 @@ export const ChessBoard: React.FC<{
       {Array.from({ length: 100 }).map((_, i) => {
         const x = Math.floor(i / 10);
         const y = Math.floor(i % 10);
-        const piece = board[`${x - 1}-${y - 1}` as keyof TBoard];
+        const isBorder = !x || x > 8 || !y || y > 8;
+        const piece = board && !isBorder ? board[x - 1][y - 1] : null;
         return (
           <ChessSquare
             key={i}
