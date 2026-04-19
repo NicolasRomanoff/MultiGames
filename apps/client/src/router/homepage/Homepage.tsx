@@ -1,7 +1,8 @@
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { EVENTS, games } from "shared/constants";
+import { games } from "shared/constants";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import type { TGames } from "shared/types";
 import { Button } from "ui/components";
 import { cn } from "ui/lib";
@@ -22,7 +23,12 @@ const Homepage = () => {
 
   const handleJoinMatchmaking = (game: TGames) => {
     socket.connect();
-    socket.emit(EVENTS.MATCHMAKING, { game });
+    handleSocketEvent({
+      socket,
+      socketMethod: "emit",
+      event: EVENTS.MATCHMAKING,
+      args: { game },
+    });
     setOnMatchmaking(game);
   };
 

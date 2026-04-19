@@ -1,7 +1,8 @@
 import { ChessBoard } from "@/components/chess/ChessBoard";
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { useEffect, useState } from "react";
-import { EVENTS, PIECES } from "shared/constants";
+import { PIECES } from "shared/constants";
+import { EVENTS } from "shared/socket";
 import type { TBoard } from "shared/types";
 import z from "zod";
 

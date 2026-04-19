@@ -1,5 +1,5 @@
 import { Server as HttpServer, createServer } from "http";
-import { EVENTS } from "shared/constants";
+import { EVENTS } from "shared/socket";
 import { Server, Socket as ServerSocket } from "socket.io";
 import { Socket as ClientSocket, io } from "socket.io-client";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";

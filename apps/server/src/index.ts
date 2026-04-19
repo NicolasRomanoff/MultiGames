@@ -1,7 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { EVENTS } from "shared/constants";
-import { matchmakingSchemas } from "shared/schemas";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server } from "socket.io";
 import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
 import { Player } from "./classes/player/Player.js";
@@ -31,12 +30,14 @@ server.on("connection", (socket) => {
   const player = new Player(socketHandler);
   playerManager.addPlayer(player);
 
-  socket.on(EVENTS.MATCHMAKING, async (game) => {
-    const { data, success } = matchmakingSchemas.safeParse(game);
-    if (!success) return;
-
-    player.setGame(data.game);
-    playerManager.findGame(data.game);
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.MATCHMAKING,
+    args: ({ game }) => {
+      player.setGame(game);
+      playerManager.findGame(game);
+    },
   });
 
   socket.on(EVENTS.LEAVE, () => {
