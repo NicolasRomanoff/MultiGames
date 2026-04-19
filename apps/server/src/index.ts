@@ -40,8 +40,13 @@ server.on("connection", (socket) => {
     },
   });
 
-  socket.on(EVENTS.LEAVE, () => {
-    playerManager.deletePlayer(player);
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.LEAVE,
+    args: () => {
+      playerManager.deletePlayer(player);
+    },
   });
 
   socket.on("disconnect", () => {

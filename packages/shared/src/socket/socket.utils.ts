@@ -20,9 +20,7 @@ export const handleSocketEvent = <
 }) => {
   const schema = events[event][socketMethod];
   const { data, success } = schema.safeParse(args);
-  if (!success) {
-    console.log("failed");
-    return;
-  }
-  socket[socketMethod](event, ...[data]);
+  if (!success) return;
+
+  socket[socketMethod](event, data);
 };

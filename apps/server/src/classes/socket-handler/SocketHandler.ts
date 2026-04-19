@@ -1,4 +1,4 @@
-import { EVENTS } from "shared/socket";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import type { Socket } from "socket.io";
 import type { ISocketHandler } from "./ISocketHandler.js";
 
@@ -7,6 +7,11 @@ export class SocketHandler implements ISocketHandler {
 
   join: ISocketHandler["join"] = (room) => {
     this.socket.join(room);
-    this.socket.emit(EVENTS.JOIN, room);
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.JOIN,
+      args: { roomName: room },
+    });
   };
 }

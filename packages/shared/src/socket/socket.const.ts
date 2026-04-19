@@ -1,29 +1,30 @@
-import z from "zod";
+import z, { ZodType } from "zod";
 import { games } from "../constants/global.const.js";
+import type { TEventValue } from "./socket.type.js";
 
 export const EVENTS = {
   MATCHMAKING: "matchmaking",
   JOIN: "join",
   LEAVE: "leave",
   CHESS: { READY: "chess-ready", BOARD: "chess-board" },
-  CHECKERS: { READY: "checkers-ready" },
-  CONNECT4: { READY: "connect4-ready" },
 } as const;
 
-export const events = {
-  [EVENTS.MATCHMAKING]: {
-    emit: z.object({ game: z.enum(games) }),
+const createEvent = <TSchema extends ZodType>(dataSchema: TSchema) => {
+  return {
+    emit: dataSchema,
     on: z.function({
-      input: [z.object({ game: z.enum(games) })],
+      input: [dataSchema],
       output: z.void(),
     }),
-  },
-  [EVENTS.JOIN]: { emit: z.object({}), on: z.function() },
-  [EVENTS.LEAVE]: { emit: z.object({}), on: z.function() },
-  [EVENTS.CHESS.READY]: { emit: z.object({}), on: z.function() },
-  [EVENTS.CHESS.BOARD]: { emit: z.object({}), on: z.function() },
-  [EVENTS.CHECKERS.READY]: { emit: z.object({}), on: z.function() },
-  [EVENTS.CONNECT4.READY]: { emit: z.object({}), on: z.function() },
-} as const;
+  };
+};
+
+export const events = {
+  [EVENTS.MATCHMAKING]: createEvent(z.object({ game: z.enum(games) })),
+  [EVENTS.JOIN]: createEvent(z.object({ roomName: z.string() })),
+  [EVENTS.LEAVE]: createEvent(z.null()),
+  [EVENTS.CHESS.READY]: createEvent(z.object({})),
+  [EVENTS.CHESS.BOARD]: createEvent(z.object({})),
+} as const satisfies Record<TEventValue, unknown>;
 
 export const socketMethod = ["on", "emit"] as const;

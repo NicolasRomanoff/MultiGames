@@ -1,5 +1,5 @@
 import { Server as HttpServer, createServer } from "http";
-import { EVENTS } from "shared/socket";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server, Socket as ServerSocket } from "socket.io";
 import { Socket as ClientSocket, io } from "socket.io-client";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
@@ -43,9 +43,14 @@ describe("PlayerManager", () => {
     socketHandler.join(roomName);
     let emitResult = "";
     await new Promise<void>((resolve) => {
-      clientSocket.on(EVENTS.JOIN, (room) => {
-        emitResult = room;
-        resolve();
+      handleSocketEvent({
+        socket: clientSocket,
+        socketMethod: "on",
+        event: EVENTS.JOIN,
+        args: ({ roomName }) => {
+          emitResult = roomName;
+          resolve();
+        },
       });
     });
 

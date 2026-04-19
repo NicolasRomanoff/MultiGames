@@ -13,8 +13,13 @@ const Homepage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    socket.on(EVENTS.JOIN, (roomName) => {
-      navigate(`/chess/${roomName}`);
+    handleSocketEvent({
+      socket,
+      socketMethod: "on",
+      event: EVENTS.JOIN,
+      args: ({ roomName }) => {
+        navigate(`/chess/${roomName}`);
+      },
     });
     return () => {
       socket.off(EVENTS.JOIN);
@@ -33,7 +38,12 @@ const Homepage = () => {
   };
 
   const handleCancelMatchmaking = () => {
-    socket.emit(EVENTS.LEAVE);
+    handleSocketEvent({
+      socket,
+      socketMethod: "emit",
+      event: EVENTS.LEAVE,
+      args: null,
+    });
     socket.disconnect();
     setOnMatchmaking(null);
   };
