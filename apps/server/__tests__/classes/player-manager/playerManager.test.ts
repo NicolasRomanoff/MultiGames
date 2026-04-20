@@ -39,9 +39,10 @@ describe("PlayerManager", () => {
     player.setGame(game);
     playerManager.addPlayer(player);
 
-    playerManager.findGame(game);
+    const result = playerManager.findGame(game);
 
     expect(player.socketHandler.join).not.toHaveBeenCalled();
+    expect(result).toBeNull();
   });
 
   it("find game with 2 players", () => {
@@ -54,10 +55,13 @@ describe("PlayerManager", () => {
     playerManager.addPlayer(player1);
     playerManager.addPlayer(player2);
 
-    playerManager.findGame(game);
+    const result = playerManager.findGame(game);
 
     expect(player1.socketHandler.join).toHaveBeenCalled();
     expect(player2.socketHandler.join).toHaveBeenCalled();
     expect(playerManager.deletePlayer).toHaveBeenCalledTimes(2);
+    expect(result?.type).toBe(game);
+    expect(result?.roomName).toBeTypeOf("string");
+    expect(result?.players).toEqual([player1, player2]);
   });
 });

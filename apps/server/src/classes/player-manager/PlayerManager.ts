@@ -20,12 +20,18 @@ export class PlayerManager implements IPlayerManager {
     const players = arrayOfPlayers.filter(
       (player) => player.getGame() === game,
     );
-    if (players.length < 2) return;
+    if (players.length < 2) return null;
 
-    const newRoomGame = `${game}-${randomUUID()}`;
-    for (const player of players.slice(0, 2)) {
-      player.socketHandler.join(newRoomGame);
+    const roomName = `${game}-${randomUUID()}`;
+    const playersOfTheGame = players.slice(0, 2);
+    for (const player of playersOfTheGame) {
+      player.socketHandler.join(roomName);
       this.deletePlayer(player);
     }
+    return {
+      type: game,
+      roomName,
+      players: playersOfTheGame,
+    };
   };
 }

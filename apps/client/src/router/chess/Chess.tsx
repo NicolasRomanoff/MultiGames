@@ -1,28 +1,35 @@
 import { ChessBoard } from "@/components/chess/ChessBoard";
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { useEffect, useState } from "react";
-import { PIECES } from "shared/constants";
-import { EVENTS } from "shared/socket";
+import { useParams } from "react-router";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import type { TBoard } from "shared/types";
-import z from "zod";
-
-const boardSchema = z.array(z.array(z.union([z.enum(PIECES), z.null()])));
 
 const Chess = () => {
   const { socket } = useSocketContext();
   const [board, setBoard] = useState<TBoard | null>(null);
+  const { roomName } = useParams();
 
   useEffect(() => {
-    socket.emit(EVENTS.CHESS.READY, () => {});
-    socket.on(EVENTS.CHESS.BOARD, (board) => {
-      const { data, success } = boardSchema.safeParse(board);
-      if (!success) return;
-      setBoard(data);
+    if (!roomName) return;
+    handleSocketEvent({
+      socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.READY,
+      args: { roomName },
+    });
+    handleSocketEvent({
+      socket,
+      socketMethod: "on",
+      event: EVENTS.CHESS.BOARD,
+      args: ({ board }) => {
+        setBoard(board);
+      },
     });
     return () => {
       socket.off(EVENTS.CHESS.BOARD);
     };
-  }, [socket]);
+  }, [socket, roomName]);
 
   return (
     <div className="flex w-full items-center justify-center">

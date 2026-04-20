@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server } from "socket.io";
+import { GameManager } from "./classes/game-manager/GameManager.js";
 import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
 import { Player } from "./classes/player/Player.js";
 import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
@@ -24,6 +25,7 @@ const httpServer = serve(
 
 const server = new Server(httpServer);
 const playerManager = new PlayerManager();
+const gameManager = new GameManager();
 
 server.on("connection", (socket) => {
   const socketHandler = new SocketHandler(socket);
@@ -36,7 +38,11 @@ server.on("connection", (socket) => {
     event: EVENTS.MATCHMAKING,
     args: ({ game }) => {
       player.setGame(game);
-      playerManager.findGame(game);
+      const gameInfo = playerManager.findGame(game);
+      if (gameInfo) {
+        const newGame = GameManager.createNewGame(gameInfo);
+        gameManager.addGame(newGame);
+      }
     },
   });
 
@@ -46,6 +52,17 @@ server.on("connection", (socket) => {
     event: EVENTS.LEAVE,
     args: () => {
       playerManager.deletePlayer(player);
+    },
+  });
+
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.READY,
+    args: ({ roomName }) => {
+      const game = gameManager.findGame(roomName);
+      if (!game) return;
+      game.sendState();
     },
   });
 

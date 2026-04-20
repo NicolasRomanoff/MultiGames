@@ -2,24 +2,22 @@ import { Server as HttpServer, createServer } from "http";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server, Socket as ServerSocket } from "socket.io";
 import { Socket as ClientSocket, io } from "socket.io-client";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { ISocketHandler } from "../../../src/classes/socket-handler/ISocketHandler.js";
 import { SocketHandler } from "../../../src/classes/socket-handler/SocketHandler.js";
 
 const PORT = 3000;
 
 describe("PlayerManager", () => {
-  const httpServer: HttpServer = createServer();
+  let httpServer: HttpServer;
   let server: Server;
   let clientSocket: ClientSocket;
   let serverSocket: ServerSocket;
   let socketHandler: ISocketHandler;
 
-  beforeAll(() => {
-    httpServer.listen(PORT);
-  });
-
   beforeEach(async () => {
+    httpServer = createServer();
+    httpServer.listen(PORT);
     server = new Server(httpServer);
 
     await new Promise<void>((resolve) => {
@@ -33,8 +31,16 @@ describe("PlayerManager", () => {
     socketHandler = new SocketHandler(serverSocket);
   });
 
-  afterEach(() => {
-    server.close();
+  afterEach(async () => {
+    clientSocket.removeAllListeners();
+    clientSocket.disconnect();
+    server.removeAllListeners();
+    await new Promise<void>((resolve) => {
+      server.close(() => resolve());
+    });
+    await new Promise<void>((resolve) => {
+      httpServer.close(() => resolve());
+    });
   });
 
   it("join", async () => {
@@ -57,5 +63,27 @@ describe("PlayerManager", () => {
     const room = server.sockets.adapter.rooms.get(roomName);
     expect(room?.has(serverSocket.id)).toBeTruthy();
     expect(emitResult).toBe(roomName);
+  });
+
+  it("sendChessState", async () => {
+    const board = Array.from({ length: 8 }).map(() =>
+      Array.from({ length: 8 }).map(() => null),
+    );
+
+    socketHandler.sendChessState(board);
+    let emitResult = null;
+    await new Promise<void>((resolve) => {
+      handleSocketEvent({
+        socket: clientSocket,
+        socketMethod: "on",
+        event: EVENTS.CHESS.BOARD,
+        args: ({ board }) => {
+          emitResult = board;
+          resolve();
+        },
+      });
+    });
+
+    expect(emitResult).toEqual(board);
   });
 });

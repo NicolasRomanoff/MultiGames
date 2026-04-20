@@ -20,7 +20,10 @@ export const handleSocketEvent = <
 }) => {
   const schema = events[event][socketMethod];
   const { data, success } = schema.safeParse(args);
-  if (!success) return;
+  if (!success) {
+    console.log("Error zod : handleSocketEvent");
+    return;
+  }
 
   socket[socketMethod](event, data);
 };

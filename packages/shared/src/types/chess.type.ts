@@ -1,4 +1,4 @@
-import type { PIECES } from "../constants/chess.const.js";
+import { PIECES } from "../constants/chess.const.js";
 
 export type TPiece = (typeof PIECES)[keyof typeof PIECES];
 

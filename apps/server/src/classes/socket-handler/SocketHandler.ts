@@ -1,4 +1,5 @@
 import { EVENTS, handleSocketEvent } from "shared/socket";
+import type { TBoard } from "shared/types";
 import type { Socket } from "socket.io";
 import type { ISocketHandler } from "./ISocketHandler.js";
 
@@ -12,6 +13,15 @@ export class SocketHandler implements ISocketHandler {
       socketMethod: "emit",
       event: EVENTS.JOIN,
       args: { roomName: room },
+    });
+  };
+
+  sendChessState: ISocketHandler["sendChessState"] = (board: TBoard) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.BOARD,
+      args: { board },
     });
   };
 }
