@@ -1,4 +1,4 @@
-import { Server as HttpServer, createServer } from "http";
+import { createServer, Server as HttpServer } from "http";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server, Socket as ServerSocket } from "socket.io";
 import { Socket as ClientSocket, io } from "socket.io-client";
@@ -65,25 +65,28 @@ describe("PlayerManager", () => {
     expect(emitResult).toBe(roomName);
   });
 
-  it("sendChessState", async () => {
+  it("sendChessState first player", async () => {
     const board = Array.from({ length: 8 }).map(() =>
       Array.from({ length: 8 }).map(() => null),
     );
 
-    socketHandler.sendChessState(board);
+    socketHandler.sendChessState({
+      isSecondPlayer: false,
+      board,
+    });
     let emitResult = null;
     await new Promise<void>((resolve) => {
       handleSocketEvent({
         socket: clientSocket,
         socketMethod: "on",
         event: EVENTS.CHESS.BOARD,
-        args: ({ board }) => {
-          emitResult = board;
+        args: ({ isSecondPlayer, board }) => {
+          emitResult = { isSecondPlayer, board: structuredClone(board) };
           resolve();
         },
       });
     });
 
-    expect(emitResult).toEqual(board);
+    expect(emitResult).toEqual({ isSecondPlayer: false, board });
   });
 });

@@ -1,6 +1,6 @@
-import type { IChess } from "../games/chess/IChess.js";
+import type { IGame } from "../games/IGame.js";
 
 export interface IGameManager {
-  addGame: (game: IChess) => void;
-  findGame: (roomName: string) => IChess | undefined;
+  addGame: (game: IGame) => void;
+  findGame: (roomName: string) => IGame | undefined;
 }

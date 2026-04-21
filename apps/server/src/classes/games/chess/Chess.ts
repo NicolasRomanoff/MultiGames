@@ -2,9 +2,9 @@ import { PIECES } from "shared/constants";
 import type { TBoardSchema } from "shared/schemas";
 import type { TGameInfo } from "../../../types/global.type.js";
 import { Game } from "../Game.js";
-import type { IChess } from "./IChess.js";
+import type { IGame } from "../IGame.js";
 
-export class Chess extends Game implements IChess {
+export class Chess extends Game implements IGame {
   private readonly board: TBoardSchema;
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -48,7 +48,7 @@ export class Chess extends Game implements IChess {
     return board.reverse().map((b) => b.reverse());
   };
 
-  sendState: IChess["sendState"] = () => {
+  sendState: IGame["sendState"] = () => {
     this.gameInfo.players[0].socketHandler.sendChessState({
       isSecondPlayer: false,
       board: this.board,
@@ -58,6 +58,4 @@ export class Chess extends Game implements IChess {
       board: this.getReverseBoard(),
     });
   };
-
-  fn: IChess["fn"] = () => {};
 }
