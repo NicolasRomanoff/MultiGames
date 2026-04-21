@@ -24,9 +24,12 @@ const Chess = () => {
       socket,
       socketMethod: "on",
       event: EVENTS.CHESS.BOARD,
-      args: ({ board, isSecondPlayer }) => {
-        setBoard(board);
-        setIsSecondPlayer(isSecondPlayer);
+      args: ({ board, isSecondPlayer: newIsSecondPlayer }) => {
+        const newBoard = newIsSecondPlayer
+          ? board.reverse().map((b) => b.reverse())
+          : board;
+        setBoard(newBoard);
+        setIsSecondPlayer(newIsSecondPlayer);
       },
     });
     handleSocketEvent({
@@ -34,14 +37,17 @@ const Chess = () => {
       socketMethod: "on",
       event: EVENTS.CHESS.PREVIEW,
       args: ({ preview }) => {
-        setPreviewBoard(preview);
+        const newPreview = isSecondPlayer
+          ? preview.map((p) => ({ x: -(p.x - 7), y: -(p.y - 7) }))
+          : preview;
+        setPreviewBoard(newPreview);
       },
     });
     return () => {
       socket.off(EVENTS.CHESS.BOARD);
       socket.off(EVENTS.CHESS.PREVIEW);
     };
-  }, [socket, roomName]);
+  }, [socket, roomName, isSecondPlayer]);
 
   return (
     <div className="flex w-full items-center justify-center">

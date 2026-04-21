@@ -77,6 +77,7 @@ server.on("connection", (socket) => {
       if (!game) return;
       const chessPiece = game.getPiece(piecePosition) as ChessPiece | null;
       if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
       const piecePreview = chessPiece.getPreview(game.getBoard());
       player.socketHandler.sendChessPreview(piecePreview);
     },

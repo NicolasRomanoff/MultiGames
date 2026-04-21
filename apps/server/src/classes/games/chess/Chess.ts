@@ -62,18 +62,14 @@ export class Chess extends Game implements IGame {
     );
   };
 
-  private getReverseBoardDTO = () => {
-    const board = structuredClone(this.getBoardDTO());
-    return board.reverse().map((b) => b.reverse());
-  };
-
   sendState: IGame["sendState"] = () => {
+    const board = this.getBoardDTO();
     this.gameInfo.players[0].socketHandler.sendChessState({
-      board: this.getBoardDTO(),
+      board,
       isSecondPlayer: false,
     });
     this.gameInfo.players[1].socketHandler.sendChessState({
-      board: this.getReverseBoardDTO(),
+      board,
       isSecondPlayer: true,
     });
   };

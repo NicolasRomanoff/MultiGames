@@ -33,11 +33,17 @@ export const ChessSquare: React.FC<{
 
   const handleChessSquare = () => {
     if (!roomName || !piece) return;
+    const x = coords.x - 1;
+    const y = coords.y - 1;
+    const piecePosition = {
+      x: isSecondPlayer ? -(x - 7) : x,
+      y: isSecondPlayer ? -(y - 7) : y,
+    };
     handleSocketEvent({
       socket,
       socketMethod: "emit",
       event: EVENTS.CHESS.SELECTION,
-      args: { roomName, piecePosition: { x: coords.x - 1, y: coords.y - 1 } },
+      args: { roomName, piecePosition },
     });
   };
 
