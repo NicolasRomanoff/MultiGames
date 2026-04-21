@@ -1,12 +1,11 @@
 import { NOTATIONS, pieceIcons } from "@/lib/constants/chess.const";
-import { createElement } from "react";
-import type { TPiece } from "shared/types";
+import type { TPiecesSchema } from "shared/schemas";
 import { reverseString } from "shared/utils";
 import { cn } from "ui/lib";
 
 export const ChessSquare: React.FC<{
   coords: { x: number; y: number };
-  piece: TPiece | null;
+  piece: TPiecesSchema | null;
   isSecondPlayer: boolean;
 }> = ({ coords, piece, isSecondPlayer }) => {
   let color = "border";
@@ -28,8 +27,8 @@ export const ChessSquare: React.FC<{
   return (
     <div
       className={cn("flex col-span-2 row-span-2", {
-        "bg-black": color === "black",
-        "bg-white": color === "white",
+        "bg-gray-700": color === "black",
+        "bg-gray-300": color === "white",
         "bg-gray-500": color === "border",
         "row-start-2 row-end-2": !coords.x,
         "row-start-19 row-end-19": coords.x === 9,
@@ -43,11 +42,7 @@ export const ChessSquare: React.FC<{
       })}
     >
       {!!notation && <p className="text-2xl">{notation}</p>}
-      {!!piece &&
-        createElement(pieceIcons[piece], {
-          color: "green",
-          className: "size-full",
-        })}
+      {!!piece && pieceIcons[piece]}
     </div>
   );
 };
