@@ -1,5 +1,8 @@
 import z from "zod";
-import { PIECES } from "../constants/chess.const.js";
+import { COLORS, PIECES } from "../constants/chess.const.js";
+
+export const colorsSchema = z.enum(COLORS);
+export type TColorsSchema = z.infer<typeof colorsSchema>;
 
 export const piecesSchema = z.union([
   z.enum(PIECES.WHITE),

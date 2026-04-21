@@ -1,3 +1,8 @@
+export const COLORS = {
+  WHITE: "white",
+  BLACK: "black",
+} as const;
+
 export const PIECES = {
   WHITE: {
     PAWN: "white-pawn",
