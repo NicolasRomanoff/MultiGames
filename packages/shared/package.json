@@ -16,6 +16,10 @@
       "types": "./src/constants/index.ts",
       "import": "./src/constants/index.ts"
     },
+    "./schemas": {
+      "types": "./src/schemas/index.ts",
+      "import": "./src/schemas/index.ts"
+    },
     "./socket": {
       "types": "./src/socket/index.ts",
       "import": "./src/socket/index.ts"

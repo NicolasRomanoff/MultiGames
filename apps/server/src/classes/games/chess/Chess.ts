@@ -1,11 +1,12 @@
 import { PIECES } from "shared/constants";
-import type { TBoard, TPiece } from "shared/types";
+import type { TBoardSchema } from "shared/schemas";
+import type { TPiece } from "shared/types";
 import type { TGameInfo } from "../../../types/global.type.js";
 import { Game } from "../Game.js";
 import type { IChess } from "./IChess.js";
 
 export class Chess extends Game implements IChess {
-  private readonly board: TBoard;
+  private readonly board: TBoardSchema;
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
     const pawnsLine = () =>

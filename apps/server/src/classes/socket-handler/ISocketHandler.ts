@@ -1,6 +1,6 @@
-import type { TBoard } from "shared/types";
+import type { TBoardSchema } from "shared/schemas";
 
 export interface ISocketHandler {
   join: (room: string) => void;
-  sendChessState: (board: TBoard) => void;
+  sendChessState: (board: TBoardSchema) => void;
 }

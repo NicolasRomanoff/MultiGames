@@ -1,9 +1,9 @@
-import type { TBoard } from "shared/types";
+import type { TBoardSchema } from "shared/schemas";
 import { cn } from "ui/lib";
 import { ChessSquare } from "./ChessSquare";
 
 export const ChessBoard: React.FC<{
-  board: TBoard | null;
+  board: TBoardSchema | null;
   isSecondPlayer: boolean;
 }> = ({ board, isSecondPlayer }) => {
   return (

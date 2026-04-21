@@ -1,5 +1,5 @@
+import type { TBoardSchema } from "shared/schemas";
 import { EVENTS, handleSocketEvent } from "shared/socket";
-import type { TBoard } from "shared/types";
 import type { Socket } from "socket.io";
 import type { ISocketHandler } from "./ISocketHandler.js";
 
@@ -16,7 +16,7 @@ export class SocketHandler implements ISocketHandler {
     });
   };
 
-  sendChessState: ISocketHandler["sendChessState"] = (board: TBoard) => {
+  sendChessState: ISocketHandler["sendChessState"] = (board: TBoardSchema) => {
     handleSocketEvent({
       socket: this.socket,
       socketMethod: "emit",

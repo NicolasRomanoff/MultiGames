@@ -2,12 +2,12 @@ import { ChessBoard } from "@/components/chess/ChessBoard";
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import type { TBoardSchema } from "shared/schemas";
 import { EVENTS, handleSocketEvent } from "shared/socket";
-import type { TBoard } from "shared/types";
 
 const Chess = () => {
   const { socket } = useSocketContext();
-  const [board, setBoard] = useState<TBoard | null>(null);
+  const [board, setBoard] = useState<TBoardSchema | null>(null);
   const { roomName } = useParams();
 
   useEffect(() => {
