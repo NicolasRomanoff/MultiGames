@@ -1,10 +1,22 @@
-import type { TColorsSchema } from "shared/schemas";
-import type { IChessPiece } from "./IChessPiece.js";
+import type {
+  TBoardPreviewSchema,
+  TBoardSchema,
+  TColorsSchema,
+  TPiecesSchema,
+  TPositionSchema,
+} from "shared/schemas";
+import { Piece } from "../../piece/Piece.js";
 
-export abstract class ChessPiece implements IChessPiece {
+export abstract class ChessPiece extends Piece {
   constructor(
     protected readonly color: TColorsSchema,
     protected position: { x: number; y: number },
-  ) {}
-  abstract canMove: IChessPiece["canMove"];
+  ) {
+    super(position);
+  }
+
+  abstract getType: () => TPiecesSchema;
+  abstract getColor: () => TColorsSchema;
+  abstract canMove: (board: TBoardSchema, to: TPositionSchema) => void;
+  abstract getPreview: (board: TBoardSchema) => TBoardPreviewSchema;
 }

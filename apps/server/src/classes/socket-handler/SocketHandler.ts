@@ -26,4 +26,13 @@ export class SocketHandler implements ISocketHandler {
       args: { isSecondPlayer, board },
     });
   };
+
+  sendChessPreview: ISocketHandler["sendChessPreview"] = (preview) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.PREVIEW,
+      args: { preview },
+    });
+  };
 }

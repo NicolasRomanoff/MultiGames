@@ -1,13 +1,22 @@
 import z, { ZodType } from "zod";
 import { games } from "../constants/global.const.js";
-import { boardSchema } from "../schemas/chess.schema.js";
+import {
+  boardPreviewSchema,
+  boardSchema,
+  positionSchema,
+} from "../schemas/chess.schema.js";
 import type { TEventValue } from "./socket.type.js";
 
 export const EVENTS = {
   MATCHMAKING: "matchmaking",
   JOIN: "join",
   LEAVE: "leave",
-  CHESS: { READY: "chess-ready", BOARD: "chess-board" },
+  CHESS: {
+    READY: "chess-ready",
+    BOARD: "chess-board",
+    SELECTION: "chess-selection",
+    PREVIEW: "chess-preview",
+  },
 } as const;
 
 const createEvent = <TSchema extends ZodType>(dataSchema: TSchema) => {
@@ -26,7 +35,13 @@ export const events = {
   [EVENTS.LEAVE]: createEvent(z.null()),
   [EVENTS.CHESS.READY]: createEvent(z.object({ roomName: z.string() })),
   [EVENTS.CHESS.BOARD]: createEvent(
-    z.object({ isSecondPlayer: z.boolean(), board: boardSchema }),
+    z.object({ board: boardSchema, isSecondPlayer: z.boolean() }),
+  ),
+  [EVENTS.CHESS.SELECTION]: createEvent(
+    z.object({ roomName: z.string(), piecePosition: positionSchema }),
+  ),
+  [EVENTS.CHESS.PREVIEW]: createEvent(
+    z.object({ preview: boardPreviewSchema }),
   ),
 } as const satisfies Record<TEventValue, unknown>;
 

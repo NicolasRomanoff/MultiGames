@@ -1,34 +1,47 @@
-import { PIECES } from "shared/constants";
-import type { TBoardSchema } from "shared/schemas";
+import { COLORS } from "shared/constants";
+import z from "zod";
 import type { TGameInfo } from "../../../types/global.type.js";
+import type { IPlayer } from "../../player/IPlayer.js";
 import { Game } from "../Game.js";
 import type { IGame } from "../IGame.js";
+import { ChessPiece } from "./pieces/ChessPiece.js";
+import { King } from "./pieces/King.js";
+
+const _chessBoardSchema = z.array(
+  z.array(z.union([z.instanceof(ChessPiece), z.null()])),
+);
 
 export class Chess extends Game implements IGame {
-  private readonly board: TBoardSchema;
+  private readonly board: z.infer<typeof _chessBoardSchema>;
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
-    const whitePawnsLine = Array.from({ length: 8 }, () => PIECES.WHITE.PAWN);
-    const blackPawnsLine = Array.from({ length: 8 }, () => PIECES.BLACK.PAWN);
+    const whitePawnsLine = Array.from(
+      { length: 8 },
+      (_, x) => new King(COLORS.WHITE, { x, y: 6 }),
+    );
+    const blackPawnsLine = Array.from(
+      { length: 8 },
+      (_, x) => new King(COLORS.BLACK, { x, y: 1 }),
+    );
     const whitePiecesLine = [
-      PIECES.WHITE.ROOK,
-      PIECES.WHITE.KNIGHT,
-      PIECES.WHITE.BISHOP,
-      PIECES.WHITE.QUEEN,
-      PIECES.WHITE.KING,
-      PIECES.WHITE.BISHOP,
-      PIECES.WHITE.KNIGHT,
-      PIECES.WHITE.ROOK,
+      new King(COLORS.WHITE, { x: 0, y: 7 }),
+      new King(COLORS.WHITE, { x: 1, y: 7 }),
+      new King(COLORS.WHITE, { x: 2, y: 7 }),
+      new King(COLORS.WHITE, { x: 3, y: 7 }),
+      new King(COLORS.WHITE, { x: 4, y: 7 }),
+      new King(COLORS.WHITE, { x: 5, y: 7 }),
+      new King(COLORS.WHITE, { x: 6, y: 7 }),
+      new King(COLORS.WHITE, { x: 7, y: 7 }),
     ];
     const blackPiecesLine = [
-      PIECES.BLACK.ROOK,
-      PIECES.BLACK.KNIGHT,
-      PIECES.BLACK.BISHOP,
-      PIECES.BLACK.QUEEN,
-      PIECES.BLACK.KING,
-      PIECES.BLACK.BISHOP,
-      PIECES.BLACK.KNIGHT,
-      PIECES.BLACK.ROOK,
+      new King(COLORS.BLACK, { x: 0, y: 0 }),
+      new King(COLORS.BLACK, { x: 1, y: 0 }),
+      new King(COLORS.BLACK, { x: 2, y: 0 }),
+      new King(COLORS.BLACK, { x: 3, y: 0 }),
+      new King(COLORS.BLACK, { x: 4, y: 0 }),
+      new King(COLORS.BLACK, { x: 5, y: 0 }),
+      new King(COLORS.BLACK, { x: 6, y: 0 }),
+      new King(COLORS.BLACK, { x: 7, y: 0 }),
     ];
     const fillBoard = () => Array.from({ length: 8 }, () => null);
     this.board = [
@@ -43,19 +56,39 @@ export class Chess extends Game implements IGame {
     ];
   }
 
-  private getReverseBoard = () => {
-    const board = structuredClone(this.board);
+  private getBoardDTO = () => {
+    return this.board.map((pieces) =>
+      pieces.map((piece) => (piece ? piece.getType() : null)),
+    );
+  };
+
+  private getReverseBoardDTO = () => {
+    const board = structuredClone(this.getBoardDTO());
     return board.reverse().map((b) => b.reverse());
   };
 
   sendState: IGame["sendState"] = () => {
     this.gameInfo.players[0].socketHandler.sendChessState({
+      board: this.getBoardDTO(),
       isSecondPlayer: false,
-      board: this.board,
     });
     this.gameInfo.players[1].socketHandler.sendChessState({
+      board: this.getReverseBoardDTO(),
       isSecondPlayer: true,
-      board: this.getReverseBoard(),
     });
+  };
+
+  getBoard = () => this.getBoardDTO();
+
+  getPlayerColor = (player: IPlayer) => {
+    if (this.gameInfo.players[0].getId() === player.getId()) {
+      return COLORS.WHITE;
+    }
+    return COLORS.BLACK;
+  };
+
+  getPiece: IGame["getPiece"] = (piecePosition) => {
+    const piece = this.board[piecePosition.y][piecePosition.x];
+    return piece;
   };
 }

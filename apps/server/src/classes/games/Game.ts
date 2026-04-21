@@ -8,4 +8,5 @@ export abstract class Game implements IGame {
 
   getRoomName: IGame["getRoomName"] = () => this.gameInfo.roomName;
   abstract sendState: IGame["sendState"];
+  abstract getPiece: IGame["getPiece"];
 }

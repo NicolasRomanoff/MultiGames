@@ -1,11 +1,12 @@
-import type { TBoardSchema } from "shared/schemas";
+import type { TBoardPreviewSchema, TBoardSchema } from "shared/schemas";
 import { cn } from "ui/lib";
 import { ChessSquare } from "./ChessSquare";
 
 export const ChessBoard: React.FC<{
   board: TBoardSchema | null;
+  previewBoard: TBoardPreviewSchema;
   isSecondPlayer: boolean;
-}> = ({ board, isSecondPlayer }) => {
+}> = ({ board, previewBoard, isSecondPlayer }) => {
   return (
     <div className={cn("grid grid-cols-20 grid-rows-20 size-150")}>
       {Array.from({ length: 100 }).map((_, i) => {
@@ -18,6 +19,7 @@ export const ChessBoard: React.FC<{
             key={i}
             coords={{ x, y }}
             piece={piece}
+            preview={!!previewBoard.find((p) => p.x === x - 1 && p.y === y - 1)}
             isSecondPlayer={isSecondPlayer}
           />
         );

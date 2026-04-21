@@ -1,13 +1,20 @@
+import { useSocketContext } from "@/hooks/useSocketContext";
 import { NOTATIONS, pieceIcons } from "@/lib/constants/chess.const";
+import { Dot } from "lucide-react";
+import { useParams } from "react-router";
 import type { TPiecesSchema } from "shared/schemas";
+import { EVENTS, handleSocketEvent } from "shared/socket";
 import { reverseString } from "shared/utils";
 import { cn } from "ui/lib";
 
 export const ChessSquare: React.FC<{
   coords: { x: number; y: number };
   piece: TPiecesSchema | null;
+  preview?: boolean;
   isSecondPlayer: boolean;
-}> = ({ coords, piece, isSecondPlayer }) => {
+}> = ({ coords, piece, preview = false, isSecondPlayer }) => {
+  const { socket } = useSocketContext();
+  const { roomName } = useParams();
   let color = "border";
   if (coords.y >= 1 && coords.y <= 8 && coords.x >= 1 && coords.x <= 8) {
     color = (coords.y + coords.x) % 2 ? "black" : "white";
@@ -24,9 +31,19 @@ export const ChessSquare: React.FC<{
       : NOTATIONS.NUMBERS[coords.x - 1];
   }
 
+  const handleChessSquare = () => {
+    if (!roomName || !piece) return;
+    handleSocketEvent({
+      socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.SELECTION,
+      args: { roomName, piecePosition: { x: coords.x - 1, y: coords.y - 1 } },
+    });
+  };
+
   return (
-    <div
-      className={cn("flex col-span-2 row-span-2", {
+    <button
+      className={cn("relative flex col-span-2 row-span-2", {
         "bg-gray-700": color === "black",
         "bg-gray-300": color === "white",
         "bg-gray-500": color === "border",
@@ -40,9 +57,15 @@ export const ChessSquare: React.FC<{
         "rounded-br-full": coords.x === 9 && coords.y === 9,
         "justify-center items-center": !!notation,
       })}
+      onClick={handleChessSquare}
     >
       {!!notation && <p className="text-2xl">{notation}</p>}
       {!!piece && pieceIcons[piece]}
-    </div>
+      {preview && (
+        <div className="absolute size-full">
+          <Dot color="red" opacity={0.5} className="size-full" />
+        </div>
+      )}
+    </button>
   );
 };
