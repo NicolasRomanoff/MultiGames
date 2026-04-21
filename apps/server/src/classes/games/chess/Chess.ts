@@ -43,10 +43,20 @@ export class Chess extends Game implements IChess {
     ];
   }
 
+  private getReverseBoard = () => {
+    const board = structuredClone(this.board);
+    return board.reverse().map((b) => b.reverse());
+  };
+
   sendState: IChess["sendState"] = () => {
-    for (const player of this.gameInfo.players) {
-      player.socketHandler.sendChessState(this.board);
-    }
+    this.gameInfo.players[0].socketHandler.sendChessState({
+      isSecondPlayer: false,
+      board: this.board,
+    });
+    this.gameInfo.players[1].socketHandler.sendChessState({
+      isSecondPlayer: true,
+      board: this.getReverseBoard(),
+    });
   };
 
   fn: IChess["fn"] = () => {};

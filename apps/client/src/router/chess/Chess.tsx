@@ -7,6 +7,7 @@ import { EVENTS, handleSocketEvent } from "shared/socket";
 
 const Chess = () => {
   const { socket } = useSocketContext();
+  const [isSecondPlayer, setIsSecondPlayer] = useState(false);
   const [board, setBoard] = useState<TBoardSchema | null>(null);
   const { roomName } = useParams();
 
@@ -22,8 +23,9 @@ const Chess = () => {
       socket,
       socketMethod: "on",
       event: EVENTS.CHESS.BOARD,
-      args: ({ board }) => {
+      args: ({ isSecondPlayer, board }) => {
         setBoard(board);
+        setIsSecondPlayer(isSecondPlayer);
       },
     });
     return () => {
@@ -33,8 +35,7 @@ const Chess = () => {
 
   return (
     <div className="flex w-full items-center justify-center">
-      <ChessBoard board={board} isSecondPlayer={false} />
-      <ChessBoard board={board} isSecondPlayer={true} />
+      <ChessBoard board={board} isSecondPlayer={isSecondPlayer} />
     </div>
   );
 };

@@ -25,7 +25,9 @@ export const events = {
   [EVENTS.JOIN]: createEvent(z.object({ roomName: z.string() })),
   [EVENTS.LEAVE]: createEvent(z.null()),
   [EVENTS.CHESS.READY]: createEvent(z.object({ roomName: z.string() })),
-  [EVENTS.CHESS.BOARD]: createEvent(z.object({ board: boardSchema })),
+  [EVENTS.CHESS.BOARD]: createEvent(
+    z.object({ isSecondPlayer: z.boolean(), board: boardSchema }),
+  ),
 } as const satisfies Record<TEventValue, unknown>;
 
 export const socketMethod = ["on", "emit"] as const;
