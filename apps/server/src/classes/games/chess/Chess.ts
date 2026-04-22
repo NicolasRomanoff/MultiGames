@@ -17,7 +17,7 @@ const _chessBoardSchema = z.array(
   z.array(z.union([z.instanceof(ChessPiece), z.null()])),
 );
 
-export class Chess extends Game implements IGame {
+export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly board: z.infer<typeof _chessBoardSchema>;
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -68,7 +68,7 @@ export class Chess extends Game implements IGame {
     );
   };
 
-  sendState: IGame["sendState"] = () => {
+  sendState: IGame<"chess">["sendState"] = () => {
     const board = this.getBoardDTO();
     this.gameInfo.players[0].socketHandler.sendChessState({
       board,
@@ -89,7 +89,7 @@ export class Chess extends Game implements IGame {
     return COLORS.BLACK;
   };
 
-  getPiece: IGame["getPiece"] = (piecePosition) => {
+  getPiece: IGame<"chess">["getPiece"] = (piecePosition) => {
     const piece = this.board[piecePosition.y][piecePosition.x];
     return piece;
   };
