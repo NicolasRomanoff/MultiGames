@@ -1,4 +1,5 @@
 import { COLORS } from "shared/constants";
+import type { TPositionSchema } from "shared/schemas";
 import z from "zod";
 import type { TGameInfo } from "../../../types/global.type.js";
 import type { IPlayer } from "../../player/IPlayer.js";
@@ -86,5 +87,13 @@ export class Chess extends Game implements IGame {
   getPiece: IGame["getPiece"] = (piecePosition) => {
     const piece = this.board[piecePosition.y][piecePosition.x];
     return piece;
+  };
+
+  movePiece = (position: TPositionSchema, to: TPositionSchema) => {
+    const piece = this.board[position.y][position.x];
+    if (!piece) return;
+    this.board[position.y][position.x] = null;
+    this.board[to.y][to.x] = piece;
+    piece.move(to);
   };
 }

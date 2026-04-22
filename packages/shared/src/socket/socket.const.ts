@@ -16,6 +16,7 @@ export const EVENTS = {
     BOARD: "chess-board",
     SELECTION: "chess-selection",
     PREVIEW: "chess-preview",
+    MOVE: "chess-move",
   },
 } as const;
 
@@ -42,6 +43,13 @@ export const events = {
   ),
   [EVENTS.CHESS.PREVIEW]: createEvent(
     z.object({ preview: boardPreviewSchema }),
+  ),
+  [EVENTS.CHESS.MOVE]: createEvent(
+    z.object({
+      roomName: z.string(),
+      position: positionSchema,
+      to: positionSchema,
+    }),
   ),
 } as const satisfies Record<TEventValue, unknown>;
 

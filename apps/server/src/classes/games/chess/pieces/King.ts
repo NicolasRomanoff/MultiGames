@@ -32,6 +32,10 @@ export class King extends ChessPiece {
     return true;
   };
 
+  move = (to: TPositionSchema) => {
+    this.position = to;
+  };
+
   getPreview = (board: TBoardSchema) => {
     const previewBoard = [];
     for (let y = this.position.y - 1; y <= this.position.y + 1; y++) {

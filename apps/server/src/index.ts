@@ -83,6 +83,21 @@ server.on("connection", (socket) => {
     },
   });
 
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.MOVE,
+    args: ({ roomName, position, to }) => {
+      const game = gameManager.findGame(roomName) as Chess | undefined;
+      if (!game) return;
+      const chessPiece = game.getPiece(position) as ChessPiece | null;
+      if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      game.movePiece(position, to);
+      game.sendState();
+    },
+  });
+
   socket.on("disconnect", () => {
     playerManager.deletePlayer(player);
   });

@@ -42,6 +42,7 @@ export const ChessSquare: React.FC<{
   );
 
   const handleSelectPiece = () => {
+    if (!roomName) return;
     if (
       positionSelected &&
       positionSelected.x === coords.x &&
@@ -49,14 +50,12 @@ export const ChessSquare: React.FC<{
     ) {
       return;
     }
-    setPreviewBoard([]);
-    if (!roomName || !piece) return;
     setPositionSelected({ x: coords.x, y: coords.y });
-    const x = coords.x - 1;
-    const y = coords.y - 1;
+    setPreviewBoard([]);
+    if (!piece) return;
     const piecePosition = {
-      x: isSecondPlayer ? -(x - 7) : x,
-      y: isSecondPlayer ? -(y - 7) : y,
+      x: isSecondPlayer ? -(coords.x - 8) : coords.x - 1,
+      y: isSecondPlayer ? -(coords.y - 8) : coords.y - 1,
     };
     handleSocketEvent({
       socket,
@@ -67,7 +66,24 @@ export const ChessSquare: React.FC<{
   };
 
   const handlePlayPiece = () => {
-    console.log(positionSelected);
+    if (!roomName) return;
+    setPreviewBoard([]);
+    if (!positionSelected) return;
+    const position = {
+      x: isSecondPlayer ? -(positionSelected.x - 8) : positionSelected.x - 1,
+      y: isSecondPlayer ? -(positionSelected.y - 8) : positionSelected.y - 1,
+    };
+    const to = {
+      x: isSecondPlayer ? -(coords.x - 8) : coords.x - 1,
+      y: isSecondPlayer ? -(coords.y - 8) : coords.y - 1,
+    };
+    handleSocketEvent({
+      socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.MOVE,
+      args: { roomName, position, to },
+    });
+    setPositionSelected(null);
   };
 
   return (
