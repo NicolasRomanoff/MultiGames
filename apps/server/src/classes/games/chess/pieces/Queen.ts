@@ -1,75 +1,35 @@
 import { COLORS, PIECES } from "shared/constants";
 import type {
   TBoardSchema,
-  TPiecesSchema,
+  TColorsSchema,
   TPositionSchema,
 } from "shared/schemas";
-import { whatColor } from "shared/utils";
+import { Bishop } from "./Bishop.js";
 import { ChessPiece } from "./ChessPiece.js";
+import { Rook } from "./Rook.js";
 
 export class Queen extends ChessPiece {
+  private readonly rook;
+  private readonly bishop;
+
+  constructor(color: TColorsSchema, position: TPositionSchema) {
+    super(color, position);
+    this.rook = new Rook(color, position);
+    this.bishop = new Bishop(color, position);
+  }
+
   getType = () =>
     this.color === COLORS.WHITE ? PIECES.WHITE.QUEEN : PIECES.BLACK.QUEEN;
 
+  move = (to: TPositionSchema) => {
+    this.rook.move(to);
+    this.bishop.move(to);
+  };
+
   getPreview = (board: TBoardSchema) => {
     const previewBoard: TPositionSchema[] = [];
-    const check = (piece: TPiecesSchema | null, position: TPositionSchema) => {
-      if (piece) {
-        if (whatColor(piece) !== this.color) {
-          previewBoard.push({ x: position.x, y: position.y });
-        }
-        return true;
-      }
-      return false;
-    };
-    for (
-      let y = this.position.y + 1, x = this.position.x + 1;
-      y <= 7 && x <= 7;
-      y++, x++
-    ) {
-      if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
-    }
-    for (
-      let y = this.position.y - 1, x = this.position.x + 1;
-      y >= 0 && x <= 7;
-      y--, x++
-    ) {
-      if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
-    }
-    for (
-      let y = this.position.y - 1, x = this.position.x - 1;
-      y >= 0 && x >= 0;
-      y--, x--
-    ) {
-      if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
-    }
-    for (
-      let y = this.position.y + 1, x = this.position.x - 1;
-      y <= 7 && x >= 0;
-      y++, x--
-    ) {
-      if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
-    }
-    for (let x = this.position.x - 1; x >= 0; x--) {
-      if (check(board[this.position.y][x], { x, y: this.position.y })) break;
-      previewBoard.push({ x, y: this.position.y });
-    }
-    for (let x = this.position.x + 1; x <= 7; x++) {
-      if (check(board[this.position.y][x], { x, y: this.position.y })) break;
-      previewBoard.push({ x, y: this.position.y });
-    }
-    for (let y = this.position.y - 1; y >= 0; y--) {
-      if (check(board[y][this.position.x], { x: this.position.x, y })) break;
-      previewBoard.push({ x: this.position.x, y });
-    }
-    for (let y = this.position.y + 1; y <= 7; y++) {
-      if (check(board[y][this.position.x], { x: this.position.x, y })) break;
-      previewBoard.push({ x: this.position.x, y });
-    }
+    previewBoard.push(...this.rook.getPreview(board));
+    previewBoard.push(...this.bishop.getPreview(board));
     return previewBoard;
   };
 }
