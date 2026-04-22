@@ -7,6 +7,7 @@ import { Game } from "../Game.js";
 import type { IGame } from "../IGame.js";
 import { ChessPiece } from "./pieces/ChessPiece.js";
 import { King } from "./pieces/King.js";
+import { Knight } from "./pieces/Knight.js";
 import { Pawn } from "./pieces/Pawn.js";
 import { Rook } from "./pieces/Rook.js";
 
@@ -28,22 +29,22 @@ export class Chess extends Game implements IGame {
     );
     const whitePiecesLine = [
       new Rook(COLORS.WHITE, { x: 0, y: 7 }),
-      new King(COLORS.WHITE, { x: 1, y: 7 }),
+      new Knight(COLORS.WHITE, { x: 1, y: 7 }),
       new King(COLORS.WHITE, { x: 2, y: 7 }),
       new King(COLORS.WHITE, { x: 3, y: 7 }),
       new King(COLORS.WHITE, { x: 4, y: 7 }),
       new King(COLORS.WHITE, { x: 5, y: 7 }),
-      new King(COLORS.WHITE, { x: 6, y: 7 }),
+      new Knight(COLORS.WHITE, { x: 6, y: 7 }),
       new Rook(COLORS.WHITE, { x: 7, y: 7 }),
     ];
     const blackPiecesLine = [
       new Rook(COLORS.BLACK, { x: 0, y: 0 }),
-      new King(COLORS.BLACK, { x: 1, y: 0 }),
+      new Knight(COLORS.BLACK, { x: 1, y: 0 }),
       new King(COLORS.BLACK, { x: 2, y: 0 }),
       new King(COLORS.BLACK, { x: 3, y: 0 }),
       new King(COLORS.BLACK, { x: 4, y: 0 }),
       new King(COLORS.BLACK, { x: 5, y: 0 }),
-      new King(COLORS.BLACK, { x: 6, y: 0 }),
+      new Knight(COLORS.BLACK, { x: 6, y: 0 }),
       new Rook(COLORS.BLACK, { x: 7, y: 0 }),
     ];
     const fillBoard = () => Array.from({ length: 8 }, () => null);
