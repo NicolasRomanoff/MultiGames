@@ -1,13 +1,10 @@
-import { COLORS, PIECES } from "shared/constants";
+import { PIECES } from "shared/constants";
 import type { TBoardSchema, TPositionSchema } from "shared/schemas";
-import { whatColor } from "shared/utils";
 import { ChessPiece } from "./ChessPiece.js";
 
 export class King extends ChessPiece {
+  protected type = PIECES.KING;
   private hasAlreadyMoved = false;
-
-  getType = () =>
-    this.color === COLORS.WHITE ? PIECES.WHITE.KING : PIECES.BLACK.KING;
 
   move = (to: TPositionSchema) => {
     this.hasAlreadyMoved = true;
@@ -22,7 +19,7 @@ export class King extends ChessPiece {
         if (y < 0 || y > 7) continue;
         if (this.position.x === x && this.position.y === y) continue;
         const pieceAtPosition = board[y][x];
-        if (pieceAtPosition && whatColor(pieceAtPosition) === this.color) {
+        if (pieceAtPosition && pieceAtPosition.color === this.color) {
           continue;
         }
         previewBoard.push({ x, y });

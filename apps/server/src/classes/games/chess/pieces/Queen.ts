@@ -1,4 +1,4 @@
-import { COLORS, PIECES } from "shared/constants";
+import { PIECES } from "shared/constants";
 import type {
   TBoardSchema,
   TColorsSchema,
@@ -9,6 +9,7 @@ import { ChessPiece } from "./ChessPiece.js";
 import { Rook } from "./Rook.js";
 
 export class Queen extends ChessPiece {
+  protected type = PIECES.QUEEN;
   private readonly rook;
   private readonly bishop;
 
@@ -17,9 +18,6 @@ export class Queen extends ChessPiece {
     this.rook = new Rook(color, position);
     this.bishop = new Bishop(color, position);
   }
-
-  getType = () =>
-    this.color === COLORS.WHITE ? PIECES.WHITE.QUEEN : PIECES.BLACK.QUEEN;
 
   move = (to: TPositionSchema) => {
     this.rook.move(to);

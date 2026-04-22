@@ -1,17 +1,14 @@
-import { COLORS, PIECES } from "shared/constants";
+import { PIECES } from "shared/constants";
 import type {
   TBoardSchema,
-  TPiecesSchema,
   TPositionSchema,
+  TTypeAndColorSchema,
 } from "shared/schemas";
-import { whatColor } from "shared/utils";
 import { ChessPiece } from "./ChessPiece.js";
 
 export class Rook extends ChessPiece {
+  protected type = PIECES.ROOK;
   private hasAlreadyMoved = false;
-
-  getType = () =>
-    this.color === COLORS.WHITE ? PIECES.WHITE.ROOK : PIECES.BLACK.ROOK;
 
   move = (to: TPositionSchema) => {
     this.hasAlreadyMoved = true;
@@ -20,9 +17,12 @@ export class Rook extends ChessPiece {
 
   getPreview = (board: TBoardSchema) => {
     const previewBoard: TPositionSchema[] = [];
-    const check = (piece: TPiecesSchema | null, position: TPositionSchema) => {
+    const check = (
+      piece: TTypeAndColorSchema | null,
+      position: TPositionSchema,
+    ) => {
       if (piece) {
-        if (whatColor(piece) !== this.color) {
+        if (piece.color !== this.color) {
           previewBoard.push({ x: position.x, y: position.y });
         }
         return true;

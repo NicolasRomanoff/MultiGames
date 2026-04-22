@@ -1,11 +1,9 @@
-import { COLORS, PIECES } from "shared/constants";
+import { PIECES } from "shared/constants";
 import type { TBoardSchema, TPositionSchema } from "shared/schemas";
-import { whatColor } from "shared/utils";
 import { ChessPiece } from "./ChessPiece.js";
 
 export class Knight extends ChessPiece {
-  getType = () =>
-    this.color === COLORS.WHITE ? PIECES.WHITE.KNIGHT : PIECES.BLACK.KNIGHT;
+  protected type = PIECES.KNIGHT;
 
   getPreview = (board: TBoardSchema) => {
     const previewBoard: TPositionSchema[] = [];
@@ -23,7 +21,7 @@ export class Knight extends ChessPiece {
       if (position.x < 0 || position.x > 7) continue;
       if (position.y < 0 || position.y > 7) continue;
       const pieceAtPosition = board[position.y][position.x];
-      if (pieceAtPosition && whatColor(pieceAtPosition) === this.color) {
+      if (pieceAtPosition && pieceAtPosition.color === this.color) {
         continue;
       }
       previewBoard.push(position);

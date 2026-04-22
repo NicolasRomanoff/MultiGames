@@ -10,13 +10,18 @@ export type TPositionSchema = z.infer<typeof positionSchema>;
 export const colorsSchema = z.enum(COLORS);
 export type TColorsSchema = z.infer<typeof colorsSchema>;
 
-export const piecesSchema = z.union([
-  z.enum(PIECES.WHITE),
-  z.enum(PIECES.BLACK),
-]);
+export const piecesSchema = z.enum(PIECES);
 export type TPiecesSchema = z.infer<typeof piecesSchema>;
 
-export const boardSchema = z.array(z.array(z.union([piecesSchema, z.null()])));
+const typeAndColorSchema = z.object({
+  type: piecesSchema,
+  color: colorsSchema,
+});
+export type TTypeAndColorSchema = z.infer<typeof typeAndColorSchema>;
+
+export const boardSchema = z.array(
+  z.array(z.union([typeAndColorSchema, z.null()])),
+);
 export type TBoardSchema = z.infer<typeof boardSchema>;
 
 export const boardPreviewSchema = z.array(positionSchema);
