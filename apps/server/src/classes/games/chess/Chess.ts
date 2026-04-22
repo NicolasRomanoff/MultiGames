@@ -7,6 +7,7 @@ import { Game } from "../Game.js";
 import type { IGame } from "../IGame.js";
 import { ChessPiece } from "./pieces/ChessPiece.js";
 import { King } from "./pieces/King.js";
+import { Pawn } from "./pieces/Pawn.js";
 
 const _chessBoardSchema = z.array(
   z.array(z.union([z.instanceof(ChessPiece), z.null()])),
@@ -18,11 +19,11 @@ export class Chess extends Game implements IGame {
     super(gameInfo);
     const whitePawnsLine = Array.from(
       { length: 8 },
-      (_, x) => new King(COLORS.WHITE, { x, y: 6 }),
+      (_, x) => new Pawn(COLORS.WHITE, { x, y: 6 }),
     );
     const blackPawnsLine = Array.from(
       { length: 8 },
-      (_, x) => new King(COLORS.BLACK, { x, y: 1 }),
+      (_, x) => new Pawn(COLORS.BLACK, { x, y: 1 }),
     );
     const whitePiecesLine = [
       new King(COLORS.WHITE, { x: 0, y: 7 }),
