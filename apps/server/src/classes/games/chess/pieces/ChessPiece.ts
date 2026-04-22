@@ -16,8 +16,11 @@ export abstract class ChessPiece extends Piece {
   }
 
   abstract getType: () => TPiecesSchema;
-  abstract getColor: () => TColorsSchema;
-  abstract canMove: (board: TBoardSchema, to: TPositionSchema) => void;
-  abstract move: (to: TPositionSchema) => void;
+  getColor() {
+    return this.color;
+  }
+  move(to: TPositionSchema) {
+    this.position = to;
+  }
   abstract getPreview: (board: TBoardSchema) => TBoardPreviewSchema;
 }

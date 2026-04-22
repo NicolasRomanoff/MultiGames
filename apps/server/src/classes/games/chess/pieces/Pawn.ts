@@ -9,23 +9,9 @@ export class Pawn extends ChessPiece {
   getType = () =>
     this.color === COLORS.WHITE ? PIECES.WHITE.PAWN : PIECES.BLACK.PAWN;
 
-  getColor = () => this.color;
-
-  canMove = (board: TBoardSchema, to: TPositionSchema) => {
-    const pieceAtPosition = board[to.x][to.y];
-    if (pieceAtPosition && whatColor(pieceAtPosition) === this.color) {
-      return false;
-    }
-    if (to.x > this.position.x + 1) return false;
-    if (to.x < this.position.x - 1) return false;
-    if (to.y > this.position.y + 1) return false;
-    if (to.y < this.position.y - 1) return false;
-    return true;
-  };
-
   move = (to: TPositionSchema) => {
     this.hasAlreadyMoved = true;
-    this.position = to;
+    super.move(to);
   };
 
   getPreview = (board: TBoardSchema) => {
