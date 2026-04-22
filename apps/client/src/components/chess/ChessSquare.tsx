@@ -1,7 +1,7 @@
+import { useChessContext } from "@/hooks/useChessContext";
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { NOTATIONS, pieceIcons } from "@/lib/constants/chess.const";
 import { Dot } from "lucide-react";
-import { useParams } from "react-router";
 import type { TPiecesSchema } from "shared/schemas";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { reverseString } from "shared/utils";
@@ -10,11 +10,17 @@ import { cn } from "ui/lib";
 export const ChessSquare: React.FC<{
   coords: { x: number; y: number };
   piece: TPiecesSchema | null;
-  preview?: boolean;
-  isSecondPlayer: boolean;
-}> = ({ coords, piece, preview = false, isSecondPlayer }) => {
+}> = ({ coords, piece }) => {
   const { socket } = useSocketContext();
-  const { roomName } = useParams();
+  const {
+    roomName,
+    isSecondPlayer,
+    previewBoard,
+    setPreviewBoard,
+    positionSelected,
+    setPositionSelected,
+  } = useChessContext();
+
   let color = "border";
   if (coords.y >= 1 && coords.y <= 8 && coords.x >= 1 && coords.x <= 8) {
     color = (coords.y + coords.x) % 2 ? "black" : "white";
@@ -31,8 +37,21 @@ export const ChessSquare: React.FC<{
       : NOTATIONS.NUMBERS[coords.x - 1];
   }
 
-  const handleChessSquare = () => {
+  const preview = previewBoard.find(
+    (p) => p.x === coords.x - 1 && p.y === coords.y - 1,
+  );
+
+  const handleSelectPiece = () => {
+    if (
+      positionSelected &&
+      positionSelected.x === coords.x &&
+      positionSelected.y === coords.y
+    ) {
+      return;
+    }
+    setPreviewBoard([]);
     if (!roomName || !piece) return;
+    setPositionSelected({ x: coords.x, y: coords.y });
     const x = coords.x - 1;
     const y = coords.y - 1;
     const piecePosition = {
@@ -47,8 +66,12 @@ export const ChessSquare: React.FC<{
     });
   };
 
+  const handlePlayPiece = () => {
+    console.log(positionSelected);
+  };
+
   return (
-    <button
+    <div
       className={cn("relative flex col-span-2 row-span-2", {
         "bg-gray-700": color === "black",
         "bg-gray-300": color === "white",
@@ -63,15 +86,15 @@ export const ChessSquare: React.FC<{
         "rounded-br-full": coords.x === 9 && coords.y === 9,
         "justify-center items-center": !!notation,
       })}
-      onClick={handleChessSquare}
     >
+      <button className="absolute size-full" onClick={handleSelectPiece} />
       {!!notation && <p className="text-2xl">{notation}</p>}
       {!!piece && pieceIcons[piece]}
-      {preview && (
-        <div className="absolute size-full">
+      {!!preview && (
+        <button className="absolute size-full" onClick={handlePlayPiece}>
           <Dot color="red" opacity={0.5} className="size-full" />
-        </div>
+        </button>
       )}
-    </button>
+    </div>
   );
 };

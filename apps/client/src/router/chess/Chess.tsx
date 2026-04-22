@@ -1,16 +1,18 @@
 import { ChessBoard } from "@/components/chess/ChessBoard";
+import { useChessContext } from "@/hooks/useChessContext";
 import { useSocketContext } from "@/hooks/useSocketContext";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import type { TBoardPreviewSchema, TBoardSchema } from "shared/schemas";
+import { useEffect } from "react";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 
 const Chess = () => {
   const { socket } = useSocketContext();
-  const [isSecondPlayer, setIsSecondPlayer] = useState(false);
-  const [board, setBoard] = useState<TBoardSchema | null>(null);
-  const [previewBoard, setPreviewBoard] = useState<TBoardPreviewSchema>([]);
-  const { roomName } = useParams();
+  const {
+    roomName,
+    isSecondPlayer,
+    setIsSecondPlayer,
+    setBoard,
+    setPreviewBoard,
+  } = useChessContext();
 
   useEffect(() => {
     if (!roomName) return;
@@ -47,15 +49,18 @@ const Chess = () => {
       socket.off(EVENTS.CHESS.BOARD);
       socket.off(EVENTS.CHESS.PREVIEW);
     };
-  }, [socket, roomName, isSecondPlayer]);
+  }, [
+    socket,
+    roomName,
+    isSecondPlayer,
+    setIsSecondPlayer,
+    setBoard,
+    setPreviewBoard,
+  ]);
 
   return (
     <div className="flex w-full items-center justify-center">
-      <ChessBoard
-        board={board}
-        previewBoard={previewBoard}
-        isSecondPlayer={isSecondPlayer}
-      />
+      <ChessBoard />
     </div>
   );
 };
