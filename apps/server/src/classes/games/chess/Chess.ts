@@ -10,6 +10,7 @@ import { ChessPiece } from "./pieces/ChessPiece.js";
 import { King } from "./pieces/King.js";
 import { Knight } from "./pieces/Knight.js";
 import { Pawn } from "./pieces/Pawn.js";
+import { Queen } from "./pieces/Queen.js";
 import { Rook } from "./pieces/Rook.js";
 
 const _chessBoardSchema = z.array(
@@ -32,7 +33,7 @@ export class Chess extends Game implements IGame {
       new Rook(COLORS.WHITE, { x: 0, y: 7 }),
       new Knight(COLORS.WHITE, { x: 1, y: 7 }),
       new Bishop(COLORS.WHITE, { x: 2, y: 7 }),
-      new King(COLORS.WHITE, { x: 3, y: 7 }),
+      new Queen(COLORS.WHITE, { x: 3, y: 7 }),
       new King(COLORS.WHITE, { x: 4, y: 7 }),
       new Bishop(COLORS.WHITE, { x: 5, y: 7 }),
       new Knight(COLORS.WHITE, { x: 6, y: 7 }),
@@ -42,7 +43,7 @@ export class Chess extends Game implements IGame {
       new Rook(COLORS.BLACK, { x: 0, y: 0 }),
       new Knight(COLORS.BLACK, { x: 1, y: 0 }),
       new Bishop(COLORS.BLACK, { x: 2, y: 0 }),
-      new King(COLORS.BLACK, { x: 3, y: 0 }),
+      new Queen(COLORS.BLACK, { x: 3, y: 0 }),
       new King(COLORS.BLACK, { x: 4, y: 0 }),
       new Bishop(COLORS.BLACK, { x: 5, y: 0 }),
       new Knight(COLORS.BLACK, { x: 6, y: 0 }),
