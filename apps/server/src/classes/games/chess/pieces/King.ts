@@ -1,17 +1,18 @@
 import { PIECES } from "shared/constants";
-import type { TBoardSchema, TPositionSchema } from "shared/schemas";
+import type { TPositionSchema } from "shared/schemas";
 import { ChessPiece } from "./ChessPiece.js";
+import type { IChessPiece } from "./IChessPiece.js";
 
 export class King extends ChessPiece {
   protected type = PIECES.KING;
   private hasAlreadyMoved = false;
 
-  move = (to: TPositionSchema) => {
+  move: IChessPiece["move"] = (to) => {
     this.hasAlreadyMoved = true;
     super.move(to);
   };
 
-  getPreview = (board: TBoardSchema) => {
+  getPreview: IChessPiece["getPreview"] = (board) => {
     const previewBoard: TPositionSchema[] = [];
     for (let y = this.position.y - 1; y <= this.position.y + 1; y++) {
       for (let x = this.position.x - 1; x <= this.position.x + 1; x++) {
@@ -19,7 +20,7 @@ export class King extends ChessPiece {
         if (y < 0 || y > 7) continue;
         if (this.position.x === x && this.position.y === y) continue;
         const pieceAtPosition = board[y][x];
-        if (pieceAtPosition && pieceAtPosition.color === this.color) {
+        if (pieceAtPosition && pieceAtPosition.getColor() === this.color) {
           continue;
         }
         previewBoard.push({ x, y });

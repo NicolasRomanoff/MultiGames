@@ -1,22 +1,16 @@
 import { PIECES } from "shared/constants";
-import type {
-  TBoardSchema,
-  TPositionSchema,
-  TTypeAndColorSchema,
-} from "shared/schemas";
+import type { TPositionSchema } from "shared/schemas";
 import { ChessPiece } from "./ChessPiece.js";
+import type { IChessPiece } from "./IChessPiece.js";
 
 export class Bishop extends ChessPiece {
   protected type = PIECES.BISHOP;
 
-  getPreview = (board: TBoardSchema) => {
+  getPreview: IChessPiece["getPreview"] = (board) => {
     const previewBoard: TPositionSchema[] = [];
-    const check = (
-      piece: TTypeAndColorSchema | null,
-      position: TPositionSchema,
-    ) => {
+    const check = (piece: IChessPiece | null, position: TPositionSchema) => {
       if (piece) {
-        if (piece.color !== this.color) {
+        if (piece.getColor() !== this.color) {
           previewBoard.push({ x: position.x, y: position.y });
         }
         return true;

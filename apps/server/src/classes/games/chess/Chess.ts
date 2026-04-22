@@ -13,12 +13,13 @@ import { Pawn } from "./pieces/Pawn.js";
 import { Queen } from "./pieces/Queen.js";
 import { Rook } from "./pieces/Rook.js";
 
-const _chessBoardSchema = z.array(
+export const chessBoardSchema = z.array(
   z.array(z.union([z.instanceof(ChessPiece), z.null()])),
 );
+export type TChessBoardSchema = z.infer<typeof chessBoardSchema>;
 
 export class Chess extends Game<"chess"> implements IGame<"chess"> {
-  private readonly board: z.infer<typeof _chessBoardSchema>;
+  private readonly board: TChessBoardSchema;
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
     const whitePawnsLine = Array.from(
@@ -80,7 +81,7 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     });
   };
 
-  getBoard = () => this.getBoardDTO();
+  getBoard = () => this.board;
 
   getPlayerColor = (player: IPlayer) => {
     if (this.gameInfo.players[0].getId() === player.getId()) {
