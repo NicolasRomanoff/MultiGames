@@ -4,6 +4,7 @@ import { getSocketHandlerMock } from "../socket-handler/socketHandler.mock.js";
 
 export const getPlayerMock = () => {
   return {
+    getId: vi.fn(),
     getGame: vi.fn(),
     setGame: vi.fn(),
     socketHandler: getSocketHandlerMock(),
