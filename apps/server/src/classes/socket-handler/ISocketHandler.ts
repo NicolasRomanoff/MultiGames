@@ -1,7 +1,11 @@
-import type { TBoardPreviewSchema, TBoardSchema } from "shared/schemas";
+import type {
+  TBoardPreviewSchema,
+  TBoardSchema,
+  TRoomNameSchema,
+} from "shared/schemas";
 
 export interface ISocketHandler {
-  join: (room: string) => void;
+  join: (room: TRoomNameSchema) => void;
   sendChessState: ({
     isSecondPlayer,
     board,

@@ -44,7 +44,7 @@ describe("PlayerManager", () => {
   });
 
   it("join", async () => {
-    const roomName = "room-test";
+    const roomName = "chess-test";
 
     socketHandler.join(roomName);
     let emitResult = "";

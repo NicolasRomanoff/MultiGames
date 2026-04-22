@@ -1,8 +1,8 @@
-import type { TGames } from "shared/types";
+import type { TGamesSchema } from "shared/schemas";
 import type { IPlayer } from "../classes/player/IPlayer.js";
 
 export type TGameInfo = {
-  type: TGames;
+  type: TGamesSchema;
   roomName: string;
   players: IPlayer[];
 };

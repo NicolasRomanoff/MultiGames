@@ -1,8 +1,7 @@
-import type { TPositionSchema } from "shared/schemas";
-import type { TGames } from "shared/types";
+import type { TGamesSchema, TPositionSchema } from "shared/schemas";
 import type { IChessPiece } from "./chess/pieces/IChessPiece.js";
 
-export interface IGame<TGame extends TGames> {
+export interface IGame<TGame extends TGamesSchema> {
   getRoomName: () => string;
   sendState: () => void;
   getPiece: (

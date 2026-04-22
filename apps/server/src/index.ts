@@ -3,8 +3,6 @@ import { Hono } from "hono";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server } from "socket.io";
 import { GameManager } from "./classes/game-manager/GameManager.js";
-import type { Chess } from "./classes/games/chess/Chess.js";
-import type { ChessPiece } from "./classes/games/chess/pieces/ChessPiece.js";
 import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
 import { Player } from "./classes/player/Player.js";
 import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
@@ -73,9 +71,9 @@ server.on("connection", (socket) => {
     socketMethod: "on",
     event: EVENTS.CHESS.SELECTION,
     args: ({ roomName, piecePosition }) => {
-      const game = gameManager.findGame(roomName) as Chess | undefined;
+      const game = gameManager.findGame(roomName);
       if (!game) return;
-      const chessPiece = game.getPiece(piecePosition) as ChessPiece | null;
+      const chessPiece = game.getPiece(piecePosition);
       if (!chessPiece) return;
       if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
       const piecePreview = chessPiece.getPreview(game.getBoard());
@@ -88,9 +86,9 @@ server.on("connection", (socket) => {
     socketMethod: "on",
     event: EVENTS.CHESS.MOVE,
     args: ({ roomName, position, to }) => {
-      const game = gameManager.findGame(roomName) as Chess | undefined;
+      const game = gameManager.findGame(roomName);
       if (!game) return;
-      const chessPiece = game.getPiece(position) as ChessPiece | null;
+      const chessPiece = game.getPiece(position);
       if (!chessPiece) return;
       if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
       game.movePiece(position, to);

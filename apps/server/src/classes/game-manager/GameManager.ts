@@ -1,11 +1,12 @@
-import type { TGames } from "shared/types";
+import type { TRoomNameSchema } from "shared/schemas";
 import type { TGameInfo } from "../../types/global.type.js";
 import { Chess } from "../games/chess/Chess.js";
 import type { IGame } from "../games/IGame.js";
-import type { IGameManager } from "./IGameManager.js";
+import type { IGameManager, TGameFromRoomName } from "./IGameManager.js";
 
-export class GameManager<T extends TGames> implements IGameManager<T> {
-  private readonly games: Set<IGame<T>> = new Set();
+export class GameManager implements IGameManager {
+  private readonly games: Set<IGame<"chess" | "checkers" | "connect4">> =
+    new Set();
 
   static createNewGame = (gameInfo: TGameInfo) => {
     switch (gameInfo.type) {
@@ -15,12 +16,16 @@ export class GameManager<T extends TGames> implements IGameManager<T> {
     throw new Error("createNewGame: WIP");
   };
 
-  addGame: IGameManager<T>["addGame"] = (game) => {
+  addGame: IGameManager["addGame"] = (game) => {
     this.games.add(game);
   };
 
-  findGame: IGameManager<T>["findGame"] = (roomName) => {
+  findGame<TRoomName extends TRoomNameSchema>(
+    roomName: TRoomName,
+  ): TGameFromRoomName<TRoomName> | undefined {
     const games = Array.from(this.games);
-    return games.find((game) => game.getRoomName() === roomName);
-  };
+    return games.find((game) => game.getRoomName() === roomName) as
+      | TGameFromRoomName<TRoomName>
+      | undefined;
+  }
 }

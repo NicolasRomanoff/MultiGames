@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import type {
   TBoardPreviewSchema,
   TBoardSchema,
+  TChessRoomNameSchema,
   TPositionSchema,
 } from "shared/schemas";
 
@@ -16,6 +17,14 @@ export const ChessProvider: React.FC<ComponentProps<"div">> = ({
   const [previewBoard, setPreviewBoard] = useState<TBoardPreviewSchema>([]);
   const [positionSelected, setPositionSelected] =
     useState<TPositionSchema | null>(null);
+
+  const isChessRoomName = (
+    roomName: unknown,
+  ): roomName is TChessRoomNameSchema => {
+    return typeof roomName === "string" && roomName.startsWith("chess-");
+  };
+
+  if (!isChessRoomName(roomName)) return;
 
   return (
     <ChessContext

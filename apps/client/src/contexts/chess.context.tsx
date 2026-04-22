@@ -2,11 +2,12 @@ import { createContext } from "react";
 import type {
   TBoardPreviewSchema,
   TBoardSchema,
+  TChessRoomNameSchema,
   TPositionSchema,
 } from "shared/schemas";
 
 type TChessContext = {
-  roomName: string | undefined;
+  roomName: TChessRoomNameSchema | undefined;
   isSecondPlayer: boolean;
   setIsSecondPlayer: (isSecondPlayer: boolean) => void;
   board: TBoardSchema | null;

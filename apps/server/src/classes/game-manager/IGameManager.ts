@@ -1,7 +1,20 @@
-import type { TGames } from "shared/types";
+import type { TGamesSchema, TRoomNameSchema } from "shared/schemas";
+import type { Chess } from "../games/chess/Chess.js";
 import type { IGame } from "../games/IGame.js";
 
-export interface IGameManager<T extends TGames> {
-  addGame: (game: IGame<T>) => void;
-  findGame: (roomName: string) => IGame<T> | undefined;
+export type GameMap = {
+  "chess-": Chess;
+};
+
+export type TGameFromRoomName<TRoomName extends string> = {
+  [TPrefix in keyof GameMap]: TRoomName extends `${TPrefix}${string}`
+    ? GameMap[TPrefix]
+    : never;
+}[keyof GameMap];
+
+export interface IGameManager {
+  addGame: (game: IGame<TGamesSchema>) => void;
+  findGame: <TRoomName extends TRoomNameSchema>(
+    roomName: TRoomName,
+  ) => TGameFromRoomName<TRoomName> | undefined;
 }

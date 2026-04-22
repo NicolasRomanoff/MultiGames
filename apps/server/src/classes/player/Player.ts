@@ -1,11 +1,11 @@
-import type { TGames } from "shared/types";
+import type { TGamesSchema } from "shared/schemas";
 import { v4 as uuidv4 } from "uuid";
 import type { ISocketHandler } from "../socket-handler/ISocketHandler.js";
 import type { IPlayer } from "./IPlayer.js";
 
 export class Player implements IPlayer {
   private id = uuidv4();
-  private game: TGames | null = null;
+  private game: TGamesSchema | null = null;
 
   constructor(public readonly socketHandler: ISocketHandler) {}
 
