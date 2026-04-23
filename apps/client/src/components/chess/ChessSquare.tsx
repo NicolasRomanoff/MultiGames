@@ -2,7 +2,7 @@ import { useChessContext } from "@/hooks/useChessContext";
 import { useSocketContext } from "@/hooks/useSocketContext";
 import { NOTATIONS } from "@/lib/constants/chess.const";
 import { getIconByPiece } from "@/lib/utils/chess.utils";
-import { Dot } from "lucide-react";
+import { Dot, Scan } from "lucide-react";
 import type { TTypeAndColorSchema } from "shared/schemas";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { reverseString } from "shared/utils";
@@ -109,7 +109,11 @@ export const ChessSquare: React.FC<{
       {!!piece && getIconByPiece(piece)}
       {!!preview && (
         <button className="absolute size-full" onClick={handlePlayPiece}>
-          <Dot color="red" opacity={0.5} className="size-full" />
+          {piece ? (
+            <Scan color="red" opacity={0.5} className="size-full" />
+          ) : (
+            <Dot color="red" opacity={0.5} className="size-full" />
+          )}
         </button>
       )}
     </div>
