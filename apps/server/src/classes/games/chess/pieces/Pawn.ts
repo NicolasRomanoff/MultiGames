@@ -1,8 +1,10 @@
 import { COLORS, PIECES } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
-import type {
-  TChessBoardSchema,
-  TChessPreviewBoardSchema,
+import {
+  DIRECTIONS,
+  type TChessBoardSchema,
+  type TChessPreviewBoardSchema,
+  type TDirection,
 } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
 import type { IChessPiece } from "./IChessPiece.js";
@@ -32,7 +34,7 @@ export class Pawn extends ChessPiece {
   private enPassant = (
     board: TChessBoardSchema,
     previewBoard: TChessPreviewBoardSchema,
-    direction: 1 | -1,
+    direction: TDirection,
     x: TPositionSchema["x"],
   ) => {
     if (x < 0 || x > 7) return;
@@ -46,25 +48,27 @@ export class Pawn extends ChessPiece {
     previewBoard.push({ position: { x, y }, specialMove: "en-passant" });
   };
 
-  getPreview = (board: TChessBoardSchema, onlyAttack: boolean = false) => {
+  getPreview = (board: TChessBoardSchema, onlyAttackMove: boolean = false) => {
     const previewBoard: TChessPreviewBoardSchema = [];
-    const direction = this.color === COLORS.WHITE ? -1 : 1;
+    const direction =
+      this.color === COLORS.WHITE ? DIRECTIONS.UP : DIRECTIONS.DOWN;
     const y = this.position.y + direction;
     if (y < 0 || y > 7) return previewBoard;
 
     for (let x = this.position.x - 1; x <= this.position.x + 1; x++) {
-      if (onlyAttack && this.position.x === x) continue;
+      if (onlyAttackMove && this.position.x === x) continue;
       if (x < 0 || x > 7) continue;
       const pieceAtPosition = board[y][x];
       if (pieceAtPosition && pieceAtPosition.getColor() === this.color) {
         continue;
       }
       if (pieceAtPosition && this.position.x === x) continue;
-      if (!onlyAttack && !pieceAtPosition && this.position.x !== x) continue;
+      if (!onlyAttackMove && !pieceAtPosition && this.position.x !== x)
+        continue;
       previewBoard.push({ position: { x, y } });
     }
 
-    if (!onlyAttack) this.doubleMove(board, previewBoard, direction);
+    if (!onlyAttackMove) this.doubleMove(board, previewBoard, direction);
     this.enPassant(board, previewBoard, direction, this.position.x - 1);
     this.enPassant(board, previewBoard, direction, this.position.x + 1);
 

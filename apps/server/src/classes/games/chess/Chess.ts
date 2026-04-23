@@ -1,5 +1,5 @@
 import { COLORS } from "shared/constants";
-import type { TPositionSchema } from "shared/schemas";
+import type { TColorsSchema, TPositionSchema } from "shared/schemas";
 import {
   MOVES,
   type TChessBoardSchema,
@@ -9,7 +9,6 @@ import type { IPlayer } from "../../player/IPlayer.js";
 import { Game } from "../Game.js";
 import type { IGame } from "../IGame.js";
 import { Bishop } from "./pieces/Bishop.js";
-import type { IChessPiece } from "./pieces/IChessPiece.js";
 import { King } from "./pieces/King.js";
 import { Knight } from "./pieces/Knight.js";
 import { Pawn } from "./pieces/Pawn.js";
@@ -93,32 +92,32 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     return piece;
   };
 
-  private isPiecethreatened = (piece: IChessPiece) => {
+  static getThreatenedCases = (
+    board: TChessBoardSchema,
+    threatenedColor: TColorsSchema,
+  ) => {
     const allThreatenedCases = new Set<TPositionSchema>();
     for (let y = 0; y <= 7; y++) {
       for (let x = 0; x <= 7; x++) {
-        const pieceAtPosition = this.board[y][x];
+        const pieceAtPosition = board[y][x];
         if (!pieceAtPosition) continue;
-        if (pieceAtPosition.getColor() === piece.getColor()) continue;
+        if (pieceAtPosition.getColor() === threatenedColor) continue;
 
         let previews = [];
-        if (pieceAtPosition instanceof Pawn) {
-          previews = pieceAtPosition.getPreview(this.board, true);
+        if (
+          pieceAtPosition instanceof Pawn ||
+          pieceAtPosition instanceof King
+        ) {
+          previews = pieceAtPosition.getPreview(board, true);
         } else {
-          previews = pieceAtPosition.getPreview(this.board);
+          previews = pieceAtPosition.getPreview(board);
         }
 
         const previewsPosition = previews.map((preview) => preview.position);
         for (const preview of previewsPosition) allThreatenedCases.add(preview);
       }
     }
-    const arrayOfAllThreatenedCases = Array.from(allThreatenedCases);
-    const piecePosition = piece.getPosition();
-    const isthreatened = !!arrayOfAllThreatenedCases.find(
-      (position) =>
-        position.x === piecePosition.x && position.y === piecePosition.y,
-    );
-    return isthreatened;
+    return Array.from(allThreatenedCases);
   };
 
   movePiece = (position: TPositionSchema, to: TPositionSchema) => {
@@ -132,6 +131,19 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     switch (movePreview.specialMove) {
       case MOVES.ENPASSANT:
         this.board[position.y][to.x] = null;
+        break;
+      case MOVES.CASTLING:
+        if (position.x > to.x) {
+          const rook = this.board[position.y][0];
+          this.board[to.y][to.x + 1] = rook;
+          this.board[position.y][0] = null;
+          rook?.move({ x: to.x + 1, y: to.y });
+        } else {
+          const rook = this.board[position.y][7];
+          this.board[to.y][to.x - 1] = rook;
+          this.board[position.y][7] = null;
+          rook?.move({ x: to.x - 1, y: to.y });
+        }
         break;
     }
     this.board[position.y][position.x] = null;

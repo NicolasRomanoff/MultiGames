@@ -9,6 +9,14 @@ export type TGameInfo = {
   players: IPlayer[];
 };
 
+export const DIRECTIONS = {
+  UP: -1,
+  DOWN: 1,
+  RIGHT: 1,
+  LEFT: -1,
+} as const;
+export type TDirection = (typeof DIRECTIONS)[keyof typeof DIRECTIONS];
+
 export const chessBoardSchema = z.array(
   z.array(z.union([z.instanceof(ChessPiece), z.null()])),
 );

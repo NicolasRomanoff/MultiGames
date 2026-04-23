@@ -6,12 +6,14 @@ import type { IChessPiece } from "./IChessPiece.js";
 
 export class Rook extends ChessPiece {
   protected type = PIECES.ROOK;
-  private hasAlreadyMoved = false;
+  private moveDone = 0;
 
   move: IChessPiece["move"] = (to) => {
-    this.hasAlreadyMoved = true;
+    this.moveDone++;
     super.move(to);
   };
+
+  getMoveDone = () => this.moveDone;
 
   getPreview: IChessPiece["getPreview"] = (board) => {
     const previewBoard: TChessPreviewBoardSchema = [];
