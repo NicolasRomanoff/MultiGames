@@ -1,22 +1,19 @@
 import { COLORS } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
-import z from "zod";
-import type { TGameInfo } from "../../../types/global.type.js";
+import {
+  MOVES,
+  type TChessBoardSchema,
+  type TGameInfo,
+} from "../../../types/global.type.js";
 import type { IPlayer } from "../../player/IPlayer.js";
 import { Game } from "../Game.js";
 import type { IGame } from "../IGame.js";
 import { Bishop } from "./pieces/Bishop.js";
-import { ChessPiece } from "./pieces/ChessPiece.js";
 import { King } from "./pieces/King.js";
 import { Knight } from "./pieces/Knight.js";
 import { Pawn } from "./pieces/Pawn.js";
 import { Queen } from "./pieces/Queen.js";
 import { Rook } from "./pieces/Rook.js";
-
-export const chessBoardSchema = z.array(
-  z.array(z.union([z.instanceof(ChessPiece), z.null()])),
-);
-export type TChessBoardSchema = z.infer<typeof chessBoardSchema>;
 
 export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly board: TChessBoardSchema;
@@ -98,6 +95,16 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   movePiece = (position: TPositionSchema, to: TPositionSchema) => {
     const piece = this.board[position.y][position.x];
     if (!piece) return;
+    const previewBoard = piece.getPreview(this.board);
+    const movePreview = previewBoard.find(
+      (preview) => preview.position.x === to.x && preview.position.y === to.y,
+    );
+    if (!movePreview) return;
+    switch (movePreview.specialMove) {
+      case MOVES.ENPASSANT:
+        this.board[position.y][to.x] = null;
+        break;
+    }
     this.board[position.y][position.x] = null;
     this.board[to.y][to.x] = piece;
     piece.move(to);

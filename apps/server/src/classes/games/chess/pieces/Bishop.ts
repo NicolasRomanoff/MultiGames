@@ -1,5 +1,6 @@
 import { PIECES } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
+import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
 import type { IChessPiece } from "./IChessPiece.js";
 
@@ -7,11 +8,11 @@ export class Bishop extends ChessPiece {
   protected type = PIECES.BISHOP;
 
   getPreview: IChessPiece["getPreview"] = (board) => {
-    const previewBoard: TPositionSchema[] = [];
+    const previewBoard: TChessPreviewBoardSchema = [];
     const check = (piece: IChessPiece | null, position: TPositionSchema) => {
       if (piece) {
         if (piece.getColor() !== this.color) {
-          previewBoard.push({ x: position.x, y: position.y });
+          previewBoard.push({ position: { x: position.x, y: position.y } });
         }
         return true;
       }
@@ -23,7 +24,7 @@ export class Bishop extends ChessPiece {
       y++, x++
     ) {
       if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
+      previewBoard.push({ position: { x, y } });
     }
     for (
       let y = this.position.y - 1, x = this.position.x + 1;
@@ -31,7 +32,7 @@ export class Bishop extends ChessPiece {
       y--, x++
     ) {
       if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
+      previewBoard.push({ position: { x, y } });
     }
     for (
       let y = this.position.y - 1, x = this.position.x - 1;
@@ -39,7 +40,7 @@ export class Bishop extends ChessPiece {
       y--, x--
     ) {
       if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
+      previewBoard.push({ position: { x, y } });
     }
     for (
       let y = this.position.y + 1, x = this.position.x - 1;
@@ -47,7 +48,7 @@ export class Bishop extends ChessPiece {
       y++, x--
     ) {
       if (check(board[y][x], { x, y })) break;
-      previewBoard.push({ x, y });
+      previewBoard.push({ position: { x, y } });
     }
     return previewBoard;
   };

@@ -1,5 +1,6 @@
 import { PIECES } from "shared/constants";
 import type { TColorsSchema, TPositionSchema } from "shared/schemas";
+import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { Bishop } from "./Bishop.js";
 import { ChessPiece } from "./ChessPiece.js";
 import type { IChessPiece } from "./IChessPiece.js";
@@ -22,7 +23,7 @@ export class Queen extends ChessPiece {
   };
 
   getPreview: IChessPiece["getPreview"] = (board) => {
-    const previewBoard: TPositionSchema[] = [];
+    const previewBoard: TChessPreviewBoardSchema = [];
     previewBoard.push(...this.rook.getPreview(board));
     previewBoard.push(...this.bishop.getPreview(board));
     return previewBoard;

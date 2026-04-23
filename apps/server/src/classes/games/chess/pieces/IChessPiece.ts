@@ -1,14 +1,16 @@
 import type {
-  TBoardPreviewSchema,
   TColorsSchema,
   TPositionSchema,
   TTypeAndColorSchema,
 } from "shared/schemas";
-import type { TChessBoardSchema } from "../Chess.js";
+import type {
+  TChessBoardSchema,
+  TChessPreviewBoardSchema,
+} from "../../../../types/global.type.js";
 
 export interface IChessPiece {
   getType: () => TTypeAndColorSchema;
   getColor: () => TColorsSchema;
   move: (to: TPositionSchema) => void;
-  getPreview: (board: TChessBoardSchema) => TBoardPreviewSchema;
+  getPreview: (board: TChessBoardSchema) => TChessPreviewBoardSchema;
 }

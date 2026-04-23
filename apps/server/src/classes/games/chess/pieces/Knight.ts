@@ -1,5 +1,5 @@
 import { PIECES } from "shared/constants";
-import type { TPositionSchema } from "shared/schemas";
+import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
 import type { IChessPiece } from "./IChessPiece.js";
 
@@ -7,7 +7,7 @@ export class Knight extends ChessPiece {
   protected type = PIECES.KNIGHT;
 
   getPreview: IChessPiece["getPreview"] = (board) => {
-    const previewBoard: TPositionSchema[] = [];
+    const previewBoard: TChessPreviewBoardSchema = [];
     const possiblePositions = new Set([
       { x: this.position.x + 1, y: this.position.y + 2 },
       { x: this.position.x + 2, y: this.position.y + 1 },
@@ -25,7 +25,7 @@ export class Knight extends ChessPiece {
       if (pieceAtPosition && pieceAtPosition.getColor() === this.color) {
         continue;
       }
-      previewBoard.push(position);
+      previewBoard.push({ position });
     }
 
     return previewBoard;
