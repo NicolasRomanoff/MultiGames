@@ -21,6 +21,10 @@ export abstract class ChessPiece implements IChessPiece {
     return this.color;
   };
 
+  getPosition: IChessPiece["getPosition"] = () => {
+    return this.position;
+  };
+
   move(to: TPositionSchema) {
     this.position = to;
   }

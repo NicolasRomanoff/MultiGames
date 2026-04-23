@@ -46,24 +46,25 @@ export class Pawn extends ChessPiece {
     previewBoard.push({ position: { x, y }, specialMove: "en-passant" });
   };
 
-  getPreview: IChessPiece["getPreview"] = (board) => {
+  getPreview = (board: TChessBoardSchema, onlyAttack: boolean = false) => {
     const previewBoard: TChessPreviewBoardSchema = [];
     const direction = this.color === COLORS.WHITE ? -1 : 1;
     const y = this.position.y + direction;
     if (y < 0 || y > 7) return previewBoard;
 
     for (let x = this.position.x - 1; x <= this.position.x + 1; x++) {
+      if (onlyAttack && this.position.x === x) continue;
       if (x < 0 || x > 7) continue;
       const pieceAtPosition = board[y][x];
       if (pieceAtPosition && pieceAtPosition.getColor() === this.color) {
         continue;
       }
       if (pieceAtPosition && this.position.x === x) continue;
-      if (!pieceAtPosition && this.position.x !== x) continue;
+      if (!onlyAttack && !pieceAtPosition && this.position.x !== x) continue;
       previewBoard.push({ position: { x, y } });
     }
 
-    this.doubleMove(board, previewBoard, direction);
+    if (!onlyAttack) this.doubleMove(board, previewBoard, direction);
     this.enPassant(board, previewBoard, direction, this.position.x - 1);
     this.enPassant(board, previewBoard, direction, this.position.x + 1);
 

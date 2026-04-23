@@ -11,6 +11,7 @@ import type {
 export interface IChessPiece {
   getType: () => TTypeAndColorSchema;
   getColor: () => TColorsSchema;
+  getPosition: () => TPositionSchema;
   move: (to: TPositionSchema) => void;
   getPreview: (board: TChessBoardSchema) => TChessPreviewBoardSchema;
 }
