@@ -4,6 +4,8 @@ import {
   MOVES,
   type TChessBoardSchema,
   type TGameInfo,
+  type TPositionLabel,
+  type TThreatenedCases,
 } from "../../../types/global.type.js";
 import type { IPlayer } from "../../player/IPlayer.js";
 import { Game } from "../Game.js";
@@ -95,8 +97,8 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   static getThreatenedCases = (
     board: TChessBoardSchema,
     threatenedColor: TColorsSchema,
-  ) => {
-    const allThreatenedCases = new Set<TPositionSchema>();
+  ): TThreatenedCases => {
+    const allThreatenedCases = new Map<TPositionLabel, TPositionSchema>();
     for (let y = 0; y <= 7; y++) {
       for (let x = 0; x <= 7; x++) {
         const pieceAtPosition = board[y][x];
@@ -114,10 +116,12 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
         }
 
         const previewsPosition = previews.map((preview) => preview.position);
-        for (const preview of previewsPosition) allThreatenedCases.add(preview);
+        for (const preview of previewsPosition) {
+          allThreatenedCases.set(`y:${y}-x:${x}`, preview);
+        }
       }
     }
-    return Array.from(allThreatenedCases);
+    return allThreatenedCases;
   };
 
   movePiece = (position: TPositionSchema, to: TPositionSchema) => {

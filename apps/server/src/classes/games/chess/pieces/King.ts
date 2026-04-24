@@ -1,10 +1,10 @@
 import { PIECES } from "shared/constants";
-import type { TPositionSchema } from "shared/schemas";
 import {
   DIRECTIONS,
   type TChessBoardSchema,
   type TChessPreviewBoardSchema,
   type TDirection,
+  type TThreatenedCases,
 } from "../../../../types/global.type.js";
 import { Chess } from "../Chess.js";
 import { ChessPiece } from "./ChessPiece.js";
@@ -23,7 +23,7 @@ export class King extends ChessPiece {
   private castling = (
     board: TChessBoardSchema,
     previewBoard: TChessPreviewBoardSchema,
-    threatenedCases: TPositionSchema[],
+    threatenedCases: TThreatenedCases,
     direction: TDirection,
   ) => {
     if (this.moveDone) return;
@@ -39,9 +39,7 @@ export class King extends ChessPiece {
     ) {
       const piece = board[this.position.y][x];
       if (piece) return;
-      const isCaseAttacked = threatenedCases.find((threatenedCase) => {
-        return threatenedCase.x === x && threatenedCase.y === this.position.y;
-      });
+      const isCaseAttacked = threatenedCases.get(this.getPositionLabel());
       if (isCaseAttacked) return;
     }
     previewBoard.push({
@@ -70,12 +68,7 @@ export class King extends ChessPiece {
 
     if (!onlyAttackMove) {
       const threatenedCases = Chess.getThreatenedCases(board, this.color);
-      const isKingAttacked = threatenedCases.find((threatenedCase) => {
-        return (
-          threatenedCase.x === this.position.x &&
-          threatenedCase.y === this.position.y
-        );
-      });
+      const isKingAttacked = threatenedCases.get(this.getPositionLabel());
       if (isKingAttacked) return previewBoard;
       this.castling(board, previewBoard, threatenedCases, DIRECTIONS.RIGHT);
       this.castling(board, previewBoard, threatenedCases, DIRECTIONS.LEFT);

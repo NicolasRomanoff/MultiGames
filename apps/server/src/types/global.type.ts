@@ -1,4 +1,8 @@
-import { positionSchema, type TGamesSchema } from "shared/schemas";
+import {
+  positionSchema,
+  type TGamesSchema,
+  type TPositionSchema,
+} from "shared/schemas";
 import z from "zod";
 import { ChessPiece } from "../classes/games/chess/pieces/ChessPiece.js";
 import type { IPlayer } from "../classes/player/IPlayer.js";
@@ -35,3 +39,6 @@ export type TChessPreview = z.infer<typeof chessPreview>;
 
 export const chessPreviewBoardSchema = z.array(chessPreview);
 export type TChessPreviewBoardSchema = z.infer<typeof chessPreviewBoardSchema>;
+
+export type TPositionLabel = `y:${number}-x:${number}`;
+export type TThreatenedCases = Map<TPositionLabel, TPositionSchema>;
