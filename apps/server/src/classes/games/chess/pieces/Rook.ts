@@ -2,22 +2,27 @@ import { PIECES } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
 import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
-import type { IChessPiece } from "./IChessPiece.js";
 
 export class Rook extends ChessPiece {
   protected type = PIECES.ROOK;
   private moveDone = 0;
 
-  move: IChessPiece["move"] = (to) => {
+  clone = () => {
+    const cloneRook = new Rook(this.color, this.position);
+    cloneRook.moveDone = this.moveDone;
+    return cloneRook;
+  };
+
+  move: ChessPiece["move"] = (to) => {
     this.moveDone++;
     super.move(to);
   };
 
   getMoveDone = () => this.moveDone;
 
-  getPreview: IChessPiece["getPreview"] = (board) => {
+  getPreview: ChessPiece["getPreview"] = (board) => {
     const previewBoard: TChessPreviewBoardSchema = [];
-    const check = (piece: IChessPiece | null, position: TPositionSchema) => {
+    const check = (piece: ChessPiece | null, position: TPositionSchema) => {
       if (piece) {
         if (piece.getColor() !== this.color) {
           previewBoard.push({ position: { x: position.x, y: position.y } });

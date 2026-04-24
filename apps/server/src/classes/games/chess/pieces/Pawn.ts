@@ -7,13 +7,18 @@ import {
   type TDirection,
 } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
-import type { IChessPiece } from "./IChessPiece.js";
 
 export class Pawn extends ChessPiece {
   protected type = PIECES.PAWN;
   private moveDone = 0;
 
-  move: IChessPiece["move"] = (to) => {
+  clone = () => {
+    const clonePawn = new Pawn(this.color, this.position);
+    clonePawn.moveDone = this.moveDone;
+    return clonePawn;
+  };
+
+  move: ChessPiece["move"] = (to) => {
     this.moveDone++;
     super.move(to);
   };

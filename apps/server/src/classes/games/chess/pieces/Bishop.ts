@@ -2,14 +2,15 @@ import { PIECES } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
 import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
-import type { IChessPiece } from "./IChessPiece.js";
 
 export class Bishop extends ChessPiece {
   protected type = PIECES.BISHOP;
 
-  getPreview: IChessPiece["getPreview"] = (board) => {
+  clone = () => new Bishop(this.color, this.position);
+
+  getPreview: ChessPiece["getPreview"] = (board) => {
     const previewBoard: TChessPreviewBoardSchema = [];
-    const check = (piece: IChessPiece | null, position: TPositionSchema) => {
+    const check = (piece: ChessPiece | null, position: TPositionSchema) => {
       if (piece) {
         if (piece.getColor() !== this.color) {
           previewBoard.push({ position: { x: position.x, y: position.y } });

@@ -1,6 +1,8 @@
 import {
   positionSchema,
+  type TColorsSchema,
   type TGamesSchema,
+  type TPiecesSchema,
   type TPositionSchema,
 } from "shared/schemas";
 import z from "zod";
@@ -40,5 +42,6 @@ export type TChessPreview = z.infer<typeof chessPreview>;
 export const chessPreviewBoardSchema = z.array(chessPreview);
 export type TChessPreviewBoardSchema = z.infer<typeof chessPreviewBoardSchema>;
 
+export type TTypeLabel = `${TColorsSchema}-${TPiecesSchema}`;
 export type TPositionLabel = `y:${number}-x:${number}`;
 export type TThreatenedCases = Map<TPositionLabel, TPositionSchema>;

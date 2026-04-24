@@ -8,14 +8,19 @@ import {
 } from "../../../../types/global.type.js";
 import { Chess } from "../Chess.js";
 import { ChessPiece } from "./ChessPiece.js";
-import type { IChessPiece } from "./IChessPiece.js";
 import { Rook } from "./Rook.js";
 
 export class King extends ChessPiece {
   protected type = PIECES.KING;
   private moveDone = 0;
 
-  move: IChessPiece["move"] = (to) => {
+  clone = () => {
+    const cloneKing = new King(this.color, this.position);
+    cloneKing.moveDone = this.moveDone;
+    return cloneKing;
+  };
+
+  move: ChessPiece["move"] = (to) => {
     this.moveDone++;
     super.move(to);
   };
@@ -48,11 +53,15 @@ export class King extends ChessPiece {
     });
   };
 
-  getPreview: IChessPiece["getPreview"] = (
+  getPreview: ChessPiece["getPreview"] = (
     board,
     onlyAttackMove: boolean = false,
   ) => {
     const previewBoard: TChessPreviewBoardSchema = [];
+    let threatenedCases;
+    if (!onlyAttackMove) {
+      threatenedCases = Chess.getThreatenedCases(board, this.color);
+    }
     for (let y = this.position.y - 1; y <= this.position.y + 1; y++) {
       for (let x = this.position.x - 1; x <= this.position.x + 1; x++) {
         if (x < 0 || x > 7) continue;
@@ -62,12 +71,18 @@ export class King extends ChessPiece {
         if (pieceAtPosition && pieceAtPosition.getColor() === this.color) {
           continue;
         }
+        if (
+          !onlyAttackMove &&
+          threatenedCases &&
+          threatenedCases.get(`y:${y}-x:${x}`)
+        ) {
+          continue;
+        }
         previewBoard.push({ position: { x, y } });
       }
     }
 
-    if (!onlyAttackMove) {
-      const threatenedCases = Chess.getThreatenedCases(board, this.color);
+    if (!onlyAttackMove && threatenedCases) {
       const isKingAttacked = threatenedCases.get(this.getPositionLabel());
       if (isKingAttacked) return previewBoard;
       this.castling(board, previewBoard, threatenedCases, DIRECTIONS.RIGHT);

@@ -1,12 +1,13 @@
 import { PIECES } from "shared/constants";
 import type { TChessPreviewBoardSchema } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
-import type { IChessPiece } from "./IChessPiece.js";
 
 export class Knight extends ChessPiece {
   protected type = PIECES.KNIGHT;
 
-  getPreview: IChessPiece["getPreview"] = (board) => {
+  clone = () => new Knight(this.color, this.position);
+
+  getPreview: ChessPiece["getPreview"] = (board) => {
     const previewBoard: TChessPreviewBoardSchema = [];
     const possiblePositions = new Set([
       { x: this.position.x + 1, y: this.position.y + 2 },

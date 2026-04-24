@@ -2,10 +2,16 @@ import type {
   TColorsSchema,
   TPiecesSchema,
   TPositionSchema,
+  TTypeAndColorSchema,
 } from "shared/schemas";
-import type { IChessPiece } from "./IChessPiece.js";
+import type {
+  TChessBoardSchema,
+  TChessPreviewBoardSchema,
+  TPositionLabel,
+  TTypeLabel,
+} from "../../../../types/global.type.js";
 
-export abstract class ChessPiece implements IChessPiece {
+export abstract class ChessPiece {
   protected abstract type: TPiecesSchema;
 
   constructor(
@@ -13,19 +19,25 @@ export abstract class ChessPiece implements IChessPiece {
     protected position: { x: number; y: number },
   ) {}
 
-  getType: IChessPiece["getType"] = () => {
+  abstract clone: () => ChessPiece;
+
+  getType = (): TTypeAndColorSchema => {
     return { type: this.type, color: this.color };
   };
 
-  getColor: IChessPiece["getColor"] = () => {
+  getTypeLabel = (): TTypeLabel => {
+    return `${this.color}-${this.type}`;
+  };
+
+  getColor = (): TColorsSchema => {
     return this.color;
   };
 
-  getPosition: IChessPiece["getPosition"] = () => {
+  getPosition = (): TPositionSchema => {
     return this.position;
   };
 
-  getPositionLabel: IChessPiece["getPositionLabel"] = () => {
+  getPositionLabel = (): TPositionLabel => {
     return `y:${this.position.y}-x:${this.position.x}`;
   };
 
@@ -33,5 +45,5 @@ export abstract class ChessPiece implements IChessPiece {
     this.position = to;
   }
 
-  abstract getPreview: IChessPiece["getPreview"];
+  abstract getPreview: (board: TChessBoardSchema) => TChessPreviewBoardSchema;
 }
