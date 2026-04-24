@@ -21,6 +21,7 @@ export class Queen extends ChessPiece {
   move: ChessPiece["move"] = (to) => {
     this.rook.move(to);
     this.bishop.move(to);
+    super.move(to);
   };
 
   getPreview: ChessPiece["getPreview"] = (board) => {

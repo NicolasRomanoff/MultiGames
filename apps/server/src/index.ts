@@ -1,4 +1,5 @@
 import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server } from "socket.io";
@@ -9,9 +10,11 @@ import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
 
 const app = new Hono();
 
-app.get("/", (c) => {
+app.get("/api/", (c) => {
   return c.text("Hello Hono!");
 });
+
+app.use(serveStatic({ root: "./dist/public" }));
 
 const httpServer = serve(
   {
