@@ -42,6 +42,9 @@ export type TChessPreview = z.infer<typeof chessPreview>;
 export const chessPreviewBoardSchema = z.array(chessPreview);
 export type TChessPreviewBoardSchema = z.infer<typeof chessPreviewBoardSchema>;
 
-export type TTypeLabel = `${TColorsSchema}-${TPiecesSchema}`;
+export type TTypeLabel<T extends TPiecesSchema> = T extends "pawn"
+  ? `${TColorsSchema}-${number}-pawn`
+  : `${TColorsSchema}-${TPiecesSchema}`;
+
 export type TPositionLabel = `y:${number}-x:${number}`;
 export type TThreatenedCases = Map<TPositionLabel, TPositionSchema>;

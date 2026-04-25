@@ -1,3 +1,4 @@
+import { PIECES } from "shared/constants";
 import type {
   TColorsSchema,
   TPiecesSchema,
@@ -25,7 +26,10 @@ export abstract class ChessPiece {
     return { type: this.type, color: this.color };
   };
 
-  getTypeLabel = (): TTypeLabel => {
+  getTypeLabel = (): TTypeLabel<TPiecesSchema> => {
+    if (this.type === PIECES.PAWN) {
+      return `${this.color}-${this.position.x}-pawn`;
+    }
     return `${this.color}-${this.type}`;
   };
 

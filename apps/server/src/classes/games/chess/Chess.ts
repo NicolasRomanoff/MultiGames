@@ -1,5 +1,9 @@
 import { COLORS } from "shared/constants";
-import type { TColorsSchema, TPositionSchema } from "shared/schemas";
+import type {
+  TColorsSchema,
+  TPiecesSchema,
+  TPositionSchema,
+} from "shared/schemas";
 import {
   MOVES,
   type TChessBoardSchema,
@@ -22,7 +26,8 @@ import { Rook } from "./pieces/Rook.js";
 
 export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly board: TChessBoardSchema;
-  private readonly pieces: Map<TTypeLabel, ChessPiece> = new Map();
+  private readonly pieces: Map<TTypeLabel<TPiecesSchema>, ChessPiece> =
+    new Map();
 
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -105,6 +110,14 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   getPiece: IGame<"chess">["getPiece"] = (piecePosition) => {
     const piece = this.board[piecePosition.y][piecePosition.x];
     return piece;
+  };
+
+  private updateAllPawnState = (color: TColorsSchema) => {
+    for (let x = 0; x <= 7; x++) {
+      const pawn = this.pieces.get(`${color}-${x}-pawn`);
+      if (!(pawn instanceof Pawn)) throw new Error("Invalid board");
+      pawn.updatePawnState();
+    }
   };
 
   static getThreatenedCases = (
@@ -209,5 +222,8 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     this.board[position.y][position.x] = null;
     this.board[to.y][to.x] = piece;
     piece.move(to);
+    this.updateAllPawnState(
+      piece.getColor() === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE,
+    );
   };
 }

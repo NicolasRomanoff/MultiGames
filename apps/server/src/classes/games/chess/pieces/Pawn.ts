@@ -2,25 +2,39 @@ import { COLORS, PIECES } from "shared/constants";
 import type { TPositionSchema } from "shared/schemas";
 import {
   DIRECTIONS,
+  MOVES,
   type TChessBoardSchema,
   type TChessPreviewBoardSchema,
   type TDirection,
 } from "../../../../types/global.type.js";
 import { ChessPiece } from "./ChessPiece.js";
 
+const PAWNSTATE = {
+  START: "start",
+  ENPASSANT: MOVES.ENPASSANT,
+  MOVED: "moved",
+} as const;
+type TPawnState = (typeof PAWNSTATE)[keyof typeof PAWNSTATE];
+
 export class Pawn extends ChessPiece {
   protected type = PIECES.PAWN;
-  private moveDone = 0;
+  private pawnState: TPawnState = PAWNSTATE.START;
 
   clone = () => {
     const clonePawn = new Pawn(this.color, this.position);
-    clonePawn.moveDone = this.moveDone;
+    clonePawn.pawnState = this.pawnState;
     return clonePawn;
   };
 
   move: ChessPiece["move"] = (to) => {
-    this.moveDone++;
+    this.pawnState = PAWNSTATE.MOVED;
+    if (this.position.y + 2 === to.y) this.pawnState = PAWNSTATE.ENPASSANT;
     super.move(to);
+  };
+
+  updatePawnState = () => {
+    if (this.pawnState !== PAWNSTATE.ENPASSANT) return;
+    this.pawnState = PAWNSTATE.MOVED;
   };
 
   private doubleMove = (
@@ -28,7 +42,7 @@ export class Pawn extends ChessPiece {
     previewBoard: TChessPreviewBoardSchema,
     direction: 1 | -1,
   ) => {
-    if (this.moveDone) return;
+    if (this.pawnState !== PAWNSTATE.START) return;
     const y = this.position.y + direction * 2;
     if (y < 0 || y > 7) return;
     if (board[y - direction][this.position.x]) return;
@@ -49,8 +63,8 @@ export class Pawn extends ChessPiece {
     const piece = board[this.position.y][x];
     if (!(piece instanceof Pawn)) return;
     if (piece.getColor() === this.color) return;
-    if (piece.moveDone !== 1) return;
-    previewBoard.push({ position: { x, y }, specialMove: "en-passant" });
+    if (piece.pawnState !== PAWNSTATE.ENPASSANT) return;
+    previewBoard.push({ position: { x, y }, specialMove: MOVES.ENPASSANT });
   };
 
   getPreview = (board: TChessBoardSchema, onlyAttackMove: boolean = false) => {
