@@ -29,6 +29,7 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly board: TChessBoardSchema;
   private readonly pieces: Map<TTypeLabel<TPiecesSchema>, ChessPiece> =
     new Map();
+  private colorToPlay: TColorsSchema = COLORS.WHITE;
 
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -274,5 +275,12 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     this.updateAllPawnState(
       piece.getColor() === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE,
     );
+  };
+
+  getColorToPlay = () => this.colorToPlay;
+
+  switchPlayerToPlay = () => {
+    this.colorToPlay =
+      this.colorToPlay === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE;
   };
 }

@@ -103,8 +103,12 @@ server.on("connection", (socket) => {
       const chessPiece = game.getPiece(position);
       if (!chessPiece) return;
       if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      if (game.getPlayerColor(player) !== game.getColorToPlay()) return;
       const isSuccess = game.movePiece(position, to);
-      if (isSuccess) game.sendState();
+      if (isSuccess) {
+        game.switchPlayerToPlay();
+        game.sendState();
+      }
     },
   });
 
@@ -118,7 +122,9 @@ server.on("connection", (socket) => {
       const chessPiece = game.getPiece(position);
       if (!chessPiece) return;
       if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      if (game.getPlayerColor(player) !== game.getColorToPlay()) return;
       game.promote(position, to, select);
+      game.switchPlayerToPlay();
       game.sendState();
     },
   });
