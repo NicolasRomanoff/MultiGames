@@ -1,5 +1,6 @@
 import z from "zod";
-import { COLORS, PIECES } from "../constants/chess.const.js";
+import { COLORS, PIECES, PROMOTEPIECES } from "../constants/chess.const.js";
+import { chessRoomNameSchema } from "./global.schema.js";
 
 export const positionSchema = z.object({
   x: z.number().min(0).max(7),
@@ -12,6 +13,23 @@ export type TColorsSchema = z.infer<typeof colorsSchema>;
 
 export const piecesSchema = z.enum(PIECES);
 export type TPiecesSchema = z.infer<typeof piecesSchema>;
+
+export const promotePiecesSchema = z.enum(PROMOTEPIECES);
+export type TPromotePiecesSchema = z.infer<typeof promotePiecesSchema>;
+
+export const wantPromoteSchema = z.object({
+  position: positionSchema,
+  to: positionSchema,
+});
+export type TWantPromoteSchema = z.infer<typeof wantPromoteSchema>;
+
+export const promoteSchema = z.object({
+  roomName: chessRoomNameSchema,
+  position: positionSchema,
+  to: positionSchema,
+  select: promotePiecesSchema,
+});
+export type TPromoteSchema = z.infer<typeof promoteSchema>;
 
 const typeAndColorSchema = z.object({
   type: piecesSchema,

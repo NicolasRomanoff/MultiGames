@@ -1,6 +1,7 @@
 import type {
   TBoardPreviewSchema,
   TBoardSchema,
+  TPositionSchema,
   TRoomNameSchema,
 } from "shared/schemas";
 
@@ -15,4 +16,5 @@ export interface ISocketHandler {
   }) => void;
 
   sendChessPreview: (piecePreview: TBoardPreviewSchema) => void;
+  sendPromoteSuggest: (position: TPositionSchema, to: TPositionSchema) => void;
 }

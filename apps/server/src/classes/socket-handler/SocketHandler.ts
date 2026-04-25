@@ -35,4 +35,13 @@ export class SocketHandler implements ISocketHandler {
       args: { preview },
     });
   };
+
+  sendPromoteSuggest: ISocketHandler["sendPromoteSuggest"] = (position, to) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.WANTPROMOTE,
+      args: { position, to },
+    });
+  };
 }

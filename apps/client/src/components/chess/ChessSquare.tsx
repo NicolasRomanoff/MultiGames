@@ -7,6 +7,7 @@ import type { TTypeAndColorSchema } from "shared/schemas";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { reverseString } from "shared/utils";
 import { cn } from "ui/lib";
+import { PromotePopover } from "./PromotePopover";
 
 export const ChessSquare: React.FC<{
   coords: { x: number; y: number };
@@ -20,6 +21,8 @@ export const ChessSquare: React.FC<{
     setPreviewBoard,
     positionSelected,
     setPositionSelected,
+    promote,
+    setPromote,
   } = useChessContext();
 
   let color = "border";
@@ -42,6 +45,11 @@ export const ChessSquare: React.FC<{
     (p) => p.x === coords.x - 1 && p.y === coords.y - 1,
   );
 
+  const isPromoteCase =
+    !!promote &&
+    promote.to.y === (isSecondPlayer ? -(coords.y - 8) : coords.y - 1) &&
+    promote.to.x === (isSecondPlayer ? -(coords.x - 8) : coords.x - 1);
+
   const handleSelectPiece = () => {
     if (!roomName) return;
     if (
@@ -53,6 +61,7 @@ export const ChessSquare: React.FC<{
     }
     setPositionSelected({ x: coords.x, y: coords.y });
     setPreviewBoard([]);
+    setPromote(null);
     if (!piece) return;
     const piecePosition = {
       x: isSecondPlayer ? -(coords.x - 8) : coords.x - 1,
@@ -107,6 +116,7 @@ export const ChessSquare: React.FC<{
       <button className="absolute size-full" onClick={handleSelectPiece} />
       {!!notation && <p className="text-2xl">{notation}</p>}
       {!!piece && getIconByPiece(piece)}
+      {isPromoteCase && <PromotePopover />}
       {!!preview && (
         <button className="absolute size-full" onClick={handlePlayPiece}>
           {piece ? (

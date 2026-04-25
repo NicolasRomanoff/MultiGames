@@ -12,6 +12,7 @@ const Chess = () => {
     setIsSecondPlayer,
     setBoard,
     setPreviewBoard,
+    setPromote,
   } = useChessContext();
 
   useEffect(() => {
@@ -45,9 +46,16 @@ const Chess = () => {
         setPreviewBoard(newPreview);
       },
     });
+    handleSocketEvent({
+      socket,
+      socketMethod: "on",
+      event: EVENTS.CHESS.WANTPROMOTE,
+      args: setPromote,
+    });
     return () => {
       socket.off(EVENTS.CHESS.BOARD);
       socket.off(EVENTS.CHESS.PREVIEW);
+      socket.off(EVENTS.CHESS.WANTPROMOTE);
     };
   }, [
     socket,
@@ -56,6 +64,7 @@ const Chess = () => {
     setIsSecondPlayer,
     setBoard,
     setPreviewBoard,
+    setPromote,
   ]);
 
   return (

@@ -1,8 +1,9 @@
-import { COLORS } from "shared/constants";
+import { COLORS, PROMOTEPIECES } from "shared/constants";
 import type {
   TColorsSchema,
   TPiecesSchema,
   TPositionSchema,
+  TPromotePiecesSchema,
 } from "shared/schemas";
 import {
   MOVES,
@@ -195,12 +196,12 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
 
   movePiece = (position: TPositionSchema, to: TPositionSchema) => {
     const piece = this.board[position.y][position.x];
-    if (!piece) return;
+    if (!piece) return false;
     const previewBoard = piece.getPreview(this.board);
     const movePreview = previewBoard.find(
       (preview) => preview.position.x === to.x && preview.position.y === to.y,
     );
-    if (!movePreview) return;
+    if (!movePreview) return false;
     switch (movePreview.specialMove) {
       case MOVES.ENPASSANT:
         this.board[position.y][to.x] = null;
@@ -218,10 +219,58 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
           rook?.move({ x: to.x - 1, y: to.y });
         }
         break;
+      case MOVES.PROMOTE: {
+        const pawn = this.board[position.y][position.x];
+        if (!pawn) return false;
+        const playerIsWhite = pawn.getColor() === COLORS.WHITE;
+        const player = playerIsWhite
+          ? this.gameInfo.players[0]
+          : this.gameInfo.players[1];
+        player.socketHandler.sendPromoteSuggest(position, to);
+        return false;
+      }
     }
     this.board[position.y][position.x] = null;
     this.board[to.y][to.x] = piece;
     piece.move(to);
+    this.updateAllPawnState(
+      piece.getColor() === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE,
+    );
+    return true;
+  };
+
+  private createNewPiecePromote = (
+    type: TPromotePiecesSchema,
+    color: TColorsSchema,
+    position: TPositionSchema,
+  ) => {
+    switch (type) {
+      case PROMOTEPIECES.BISHOP:
+        return new Bishop(color, position);
+      case PROMOTEPIECES.KNIGHT:
+        return new Knight(color, position);
+      case PROMOTEPIECES.QUEEN:
+        return new Queen(color, position);
+      case PROMOTEPIECES.ROOK:
+        return new Rook(color, position);
+    }
+  };
+
+  promote = (
+    position: TPositionSchema,
+    to: TPositionSchema,
+    select: TPromotePiecesSchema,
+  ) => {
+    const piece = this.board[position.y][position.x];
+    if (!piece) return;
+    const previewBoard = piece.getPreview(this.board);
+    const movePreview = previewBoard.find(
+      (preview) => preview.position.x === to.x && preview.position.y === to.y,
+    );
+    if (!movePreview) return;
+    this.board[position.y][position.x] = null;
+    const newPiece = this.createNewPiecePromote(select, piece.getColor(), to);
+    this.board[to.y][to.x] = newPiece;
     this.updateAllPawnState(
       piece.getColor() === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE,
     );

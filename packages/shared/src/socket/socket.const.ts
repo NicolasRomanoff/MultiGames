@@ -3,6 +3,8 @@ import {
   boardPreviewSchema,
   boardSchema,
   positionSchema,
+  promoteSchema,
+  wantPromoteSchema,
 } from "../schemas/chess.schema.js";
 import {
   GamesSchema,
@@ -21,6 +23,8 @@ export const EVENTS = {
     SELECTION: "chess-selection",
     PREVIEW: "chess-preview",
     MOVE: "chess-move",
+    WANTPROMOTE: "chess-wantpromote",
+    PROMOTE: "chess-promote",
   },
 } as const;
 
@@ -57,6 +61,8 @@ export const events = {
       to: positionSchema,
     }),
   ),
+  [EVENTS.CHESS.WANTPROMOTE]: createEvent(wantPromoteSchema),
+  [EVENTS.CHESS.PROMOTE]: createEvent(promoteSchema),
 } as const satisfies Record<TEventValue, unknown>;
 
 export const socketMethod = ["on", "emit"] as const;

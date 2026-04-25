@@ -31,6 +31,7 @@ export type TChessBoardSchema = z.infer<typeof chessBoardSchema>;
 export const MOVES = {
   ENPASSANT: "en-passant",
   CASTLING: "castling",
+  PROMOTE: "promote",
 } as const;
 
 export const chessPreview = z.object({

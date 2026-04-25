@@ -103,7 +103,22 @@ server.on("connection", (socket) => {
       const chessPiece = game.getPiece(position);
       if (!chessPiece) return;
       if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
-      game.movePiece(position, to);
+      const isSuccess = game.movePiece(position, to);
+      if (isSuccess) game.sendState();
+    },
+  });
+
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.PROMOTE,
+    args: ({ roomName, position, to, select }) => {
+      const game = gameManager.findGame(roomName);
+      if (!game) return;
+      const chessPiece = game.getPiece(position);
+      if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      game.promote(position, to, select);
       game.sendState();
     },
   });

@@ -11,3 +11,10 @@ export const PIECES = {
   QUEEN: "queen",
   KING: "king",
 } as const;
+
+export const PROMOTEPIECES = {
+  ROOK: PIECES.ROOK,
+  KNIGHT: PIECES.KNIGHT,
+  BISHOP: PIECES.BISHOP,
+  QUEEN: PIECES.QUEEN,
+} as const;

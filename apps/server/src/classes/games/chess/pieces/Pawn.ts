@@ -84,7 +84,10 @@ export class Pawn extends ChessPiece {
       if (pieceAtPosition && this.position.x === x) continue;
       if (!onlyAttackMove && !pieceAtPosition && this.position.x !== x)
         continue;
-      previewBoard.push({ position: { x, y } });
+      previewBoard.push({
+        position: { x, y },
+        specialMove: !y || y === 7 ? MOVES.PROMOTE : undefined,
+      });
     }
 
     if (!onlyAttackMove) this.doubleMove(board, previewBoard, direction);

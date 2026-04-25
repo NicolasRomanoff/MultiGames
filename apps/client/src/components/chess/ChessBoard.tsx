@@ -1,9 +1,16 @@
 import { useChessContext } from "@/hooks/useChessContext";
+import { useEffect } from "react";
 import { cn } from "ui/lib";
 import { ChessSquare } from "./ChessSquare";
 
 export const ChessBoard = () => {
-  const { board } = useChessContext();
+  const { board, setPreviewBoard, setPositionSelected } = useChessContext();
+
+  useEffect(() => {
+    setPreviewBoard([]);
+    setPositionSelected(null);
+  }, [board, setPreviewBoard, setPositionSelected]);
+
   return (
     <div className={cn("grid grid-cols-20 grid-rows-20 size-150")}>
       {Array.from({ length: 100 }).map((_, i) => {
