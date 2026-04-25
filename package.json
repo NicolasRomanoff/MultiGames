@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "build": "pnpm --parallel -r build",
-    "start": "pnpm -r start",
+    "start": "pnpm --filter server start",
     "lint": "pnpm -r lint",
     "clear": "rm -rf node_modules && pnpm --parallel -r clear",
     "test": "pnpm -r test"

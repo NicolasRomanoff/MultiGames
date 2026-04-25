@@ -1,5 +1,4 @@
 import { serve } from "@hono/node-server";
-import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 import { Server } from "socket.io";
@@ -14,7 +13,10 @@ app.get("/api/", (c) => {
   return c.text("Hello Hono!");
 });
 
-app.use(serveStatic({ root: "./dist/public" }));
+if (process.env.NODE_ENV === "PROD") {
+  const { serveStatic } = await import("@hono/node-server/serve-static"); // Windows patch
+  app.use(serveStatic({ root: "./dist/public" }));
+}
 
 const httpServer = serve(
   {
