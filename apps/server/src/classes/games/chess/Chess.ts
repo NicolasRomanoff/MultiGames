@@ -161,14 +161,16 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
       const tmpBoard = this.cloneBoard();
       tmpBoard[piecePosition.y][piecePosition.x] = null;
       tmpBoard[preview.position.y][preview.position.x] = piece;
+      if (piece instanceof King && piece.getColor() === pieceColor) {
+        tmpBoard[preview.position.y][preview.position.x] = null;
+      }
       const threatenedCases = Chess.getThreatenedCases(tmpBoard, pieceColor);
-      if (
-        piece instanceof King &&
-        piece.getColor() === pieceColor &&
-        !threatenedCases.get(`y:${preview.position.y}-x:${preview.position.x}`)
-      ) {
+      if (piece instanceof King && piece.getColor() === pieceColor) {
+        const isKingMenaced = threatenedCases.get(
+          `y:${preview.position.y}-x:${preview.position.x}`,
+        );
+        if (isKingMenaced) continue;
         newPiecePreview.push(preview);
-        continue;
       }
       const king = this.pieces.get(`${pieceColor}-king`);
       if (!king) throw new Error("Invalid board");
