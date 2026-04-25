@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "dev": "tsc -w",
     "build": "tsc -b",
-    "clear": "rm -rf node_modules"
+    "clear": "rm -rf node_modules dist"
   },
   "keywords": [],
   "author": "",
