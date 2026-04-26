@@ -2,6 +2,7 @@ import z, { ZodType } from "zod";
 import {
   boardPreviewSchema,
   boardSchema,
+  chessTimers,
   positionSchema,
   promoteSchema,
   wantPromoteSchema,
@@ -25,6 +26,7 @@ export const EVENTS = {
     MOVE: "chess-move",
     WANTPROMOTE: "chess-wantpromote",
     PROMOTE: "chess-promote",
+    TIMERS: "chess-timers",
   },
 } as const;
 
@@ -63,6 +65,7 @@ export const events = {
   ),
   [EVENTS.CHESS.WANTPROMOTE]: createEvent(wantPromoteSchema),
   [EVENTS.CHESS.PROMOTE]: createEvent(promoteSchema),
+  [EVENTS.CHESS.TIMERS]: createEvent(chessTimers),
 } as const satisfies Record<TEventValue, unknown>;
 
 export const socketMethod = ["on", "emit"] as const;

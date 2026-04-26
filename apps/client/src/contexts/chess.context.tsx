@@ -3,6 +3,7 @@ import type {
   TBoardPreviewSchema,
   TBoardSchema,
   TChessRoomNameSchema,
+  TChessTimers,
   TPositionSchema,
   TWantPromoteSchema,
 } from "shared/schemas";
@@ -19,6 +20,13 @@ type TChessContext = {
   setPositionSelected: (selectedPiece: TPositionSchema | null) => void;
   promote: TWantPromoteSchema | null;
   setPromote: (promote: TWantPromoteSchema | null) => void;
+  timers: TChessTimers | null;
+  setTimers: (
+    timers:
+      | TChessTimers
+      | ((prev: TChessTimers | null) => TChessTimers | null)
+      | null,
+  ) => void;
 };
 
 export const ChessContext = createContext<TChessContext | null>(null);

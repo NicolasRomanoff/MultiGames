@@ -44,4 +44,13 @@ export class SocketHandler implements ISocketHandler {
       args: { position, to },
     });
   };
+
+  sendChessTimers: ISocketHandler["sendChessTimers"] = (timers) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.TIMERS,
+      args: timers,
+    });
+  };
 }

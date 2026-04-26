@@ -7,5 +7,6 @@ export const getSocketHandlerMock = () => {
     sendChessState: vi.fn(),
     sendChessPreview: vi.fn(),
     sendPromoteSuggest: vi.fn(),
+    sendChessTimers: vi.fn(),
   } as ISocketHandler;
 };

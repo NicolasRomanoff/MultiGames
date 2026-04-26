@@ -1,7 +1,10 @@
 import { ChessBoard } from "@/components/chess/ChessBoard";
+import { Pendulum } from "@/components/chess/Pendulum";
 import { useChessContext } from "@/hooks/useChessContext";
 import { useSocketContext } from "@/hooks/useSocketContext";
+import { subMilliseconds } from "date-fns";
 import { useEffect } from "react";
+import { COLORS } from "shared/constants";
 import { EVENTS, handleSocketEvent } from "shared/socket";
 
 const Chess = () => {
@@ -13,6 +16,7 @@ const Chess = () => {
     setBoard,
     setPreviewBoard,
     setPromote,
+    setTimers,
   } = useChessContext();
 
   useEffect(() => {
@@ -52,10 +56,17 @@ const Chess = () => {
       event: EVENTS.CHESS.WANTPROMOTE,
       args: setPromote,
     });
+    handleSocketEvent({
+      socket,
+      socketMethod: "on",
+      event: EVENTS.CHESS.TIMERS,
+      args: setTimers,
+    });
     return () => {
       socket.off(EVENTS.CHESS.BOARD);
       socket.off(EVENTS.CHESS.PREVIEW);
       socket.off(EVENTS.CHESS.WANTPROMOTE);
+      socket.off(EVENTS.CHESS.TIMERS);
     };
   }, [
     socket,
@@ -65,11 +76,27 @@ const Chess = () => {
     setBoard,
     setPreviewBoard,
     setPromote,
+    setTimers,
   ]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimers((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          [prev.colorToPlay]: subMilliseconds(prev[prev.colorToPlay], 10),
+        };
+      });
+    }, 10);
+    return () => clearInterval(interval);
+  }, [setTimers]);
+
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex flex-col w-full items-center justify-center">
+      <Pendulum color={isSecondPlayer ? COLORS.WHITE : COLORS.BLACK} />
       <ChessBoard />
+      <Pendulum color={isSecondPlayer ? COLORS.BLACK : COLORS.WHITE} />
     </div>
   );
 };

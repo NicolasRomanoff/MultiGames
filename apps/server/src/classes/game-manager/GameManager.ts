@@ -7,6 +7,11 @@ import type { IGameManager, TGameFromRoomName } from "./IGameManager.js";
 export class GameManager implements IGameManager {
   private readonly games: Set<IGame<"chess" | "checkers" | "connect4">> =
     new Set();
+  private readonly interval = setInterval(() => {
+    for (const game of this.games) {
+      game.handleTimers();
+    }
+  }, 1000);
 
   static createNewGame = (gameInfo: TGameInfo) => {
     switch (gameInfo.type) {
@@ -28,4 +33,8 @@ export class GameManager implements IGameManager {
       | TGameFromRoomName<TRoomName>
       | undefined;
   }
+
+  clearGameManagerInterval: IGameManager["clearGameManagerInterval"] = () => {
+    clearInterval(this.interval);
+  };
 }

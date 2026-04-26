@@ -5,6 +5,7 @@ import type {
   TBoardPreviewSchema,
   TBoardSchema,
   TChessRoomNameSchema,
+  TChessTimers,
   TPositionSchema,
   TWantPromoteSchema,
 } from "shared/schemas";
@@ -19,6 +20,7 @@ export const ChessProvider: React.FC<ComponentProps<"div">> = ({
   const [positionSelected, setPositionSelected] =
     useState<TPositionSchema | null>(null);
   const [promote, setPromote] = useState<TWantPromoteSchema | null>(null);
+  const [timers, setTimers] = useState<TChessTimers | null>(null);
 
   const isChessRoomName = (
     roomName: unknown,
@@ -42,6 +44,8 @@ export const ChessProvider: React.FC<ComponentProps<"div">> = ({
         setPositionSelected,
         promote,
         setPromote,
+        timers,
+        setTimers,
       }}
     >
       {children}

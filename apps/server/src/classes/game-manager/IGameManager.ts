@@ -17,4 +17,5 @@ export interface IGameManager {
   findGame: <TRoomName extends TRoomNameSchema>(
     roomName: TRoomName,
   ) => TGameFromRoomName<TRoomName> | undefined;
+  clearGameManagerInterval: () => void;
 }

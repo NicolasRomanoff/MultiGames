@@ -37,6 +37,13 @@ const typeAndColorSchema = z.object({
 });
 export type TTypeAndColorSchema = z.infer<typeof typeAndColorSchema>;
 
+export const chessTimers = z.object({
+  white: z.coerce.date<Date>(),
+  black: z.coerce.date<Date>(),
+  colorToPlay: colorsSchema,
+});
+export type TChessTimers = z.infer<typeof chessTimers>;
+
 export const boardSchema = z.array(
   z.array(z.union([typeAndColorSchema, z.null()])),
 );

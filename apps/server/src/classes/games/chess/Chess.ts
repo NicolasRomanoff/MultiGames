@@ -1,3 +1,10 @@
+import {
+  differenceInMilliseconds,
+  getHours,
+  getMinutes,
+  getSeconds,
+  subMilliseconds,
+} from "date-fns";
 import { COLORS, PROMOTEPIECES } from "shared/constants";
 import type {
   TColorsSchema,
@@ -30,6 +37,12 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly pieces: Map<TTypeLabel<TPiecesSchema>, ChessPiece> =
     new Map();
   private colorToPlay: TColorsSchema = COLORS.WHITE;
+  private readonly millisecondsForPlayer = 10 * 60 * 1000;
+  private readonly timers = {
+    turnStart: new Date(),
+    white: new Date(this.millisecondsForPlayer),
+    black: new Date(this.millisecondsForPlayer),
+  };
 
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -98,6 +111,12 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
       board,
       isSecondPlayer: true,
     });
+    for (const player of this.gameInfo.players) {
+      player.socketHandler.sendChessTimers({
+        ...this.timers,
+        colorToPlay: this.colorToPlay,
+      });
+    }
   };
 
   getBoard = () => this.board;
@@ -112,6 +131,20 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   getPiece: IGame<"chess">["getPiece"] = (piecePosition) => {
     const piece = this.board[piecePosition.y][piecePosition.x];
     return piece;
+  };
+
+  handleTimers: IGame<"chess">["handleTimers"] = () => {
+    const whiteHours = getHours(this.timers.white);
+    const whiteMinutes = getMinutes(this.timers.white);
+    const whiteSeconds = getSeconds(this.timers.white);
+    const whiteTimer = (whiteHours * 60 + whiteMinutes) * 60 + whiteSeconds;
+    if (whiteTimer <= 0) console.log("white end");
+
+    const blackHours = getHours(this.timers.black);
+    const blackMinutes = getMinutes(this.timers.black);
+    const blackSeconds = getSeconds(this.timers.black);
+    const blackTimer = (blackHours * 60 + blackMinutes) * 60 + blackSeconds;
+    if (blackTimer <= 0) console.log("black end");
   };
 
   private updateAllPawnState = (color: TColorsSchema) => {
@@ -280,7 +313,24 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   getColorToPlay = () => this.colorToPlay;
 
   switchPlayerToPlay = () => {
-    this.colorToPlay =
-      this.colorToPlay === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE;
+    const milliseconds = differenceInMilliseconds(
+      new Date(),
+      this.timers.turnStart,
+    );
+    if (this.colorToPlay === COLORS.WHITE) {
+      this.timers.white = subMilliseconds(this.timers.white, milliseconds);
+      this.colorToPlay = COLORS.BLACK;
+    } else {
+      this.timers.black = subMilliseconds(this.timers.black, milliseconds);
+      this.colorToPlay = COLORS.WHITE;
+    }
+    for (const player of this.gameInfo.players) {
+      player.socketHandler.sendChessTimers({
+        ...this.timers,
+        colorToPlay: this.colorToPlay,
+      });
+    }
+
+    this.timers.turnStart = new Date();
   };
 }

@@ -7,4 +7,5 @@ export interface IGame<TGame extends TGamesSchema> {
   getPiece: (
     piecePostion: TPositionSchema,
   ) => (TGame extends "chess" ? ChessPiece : never) | null;
+  handleTimers: () => void;
 }

@@ -10,4 +10,5 @@ export abstract class Game<TGame extends TGamesSchema> implements IGame<TGame> {
   getRoomName: IGame<TGame>["getRoomName"] = () => this.gameInfo.roomName;
   abstract sendState: IGame<TGame>["sendState"];
   abstract getPiece: IGame<TGame>["getPiece"];
+  abstract handleTimers: IGame<TGame>["handleTimers"];
 }
