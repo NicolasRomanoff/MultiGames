@@ -10,6 +10,9 @@ export class GameManager implements IGameManager {
   private readonly interval = setInterval(() => {
     for (const game of this.games) {
       game.handleTimers();
+      if (game.getIsDone()) {
+        this.games.delete(game);
+      }
     }
   }, 1000);
 

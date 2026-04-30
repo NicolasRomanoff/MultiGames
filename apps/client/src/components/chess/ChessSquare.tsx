@@ -23,6 +23,7 @@ export const ChessSquare: React.FC<{
     setPositionSelected,
     promote,
     setPromote,
+    winner,
   } = useChessContext();
 
   let color = "border";
@@ -76,7 +77,7 @@ export const ChessSquare: React.FC<{
   };
 
   const handlePlayPiece = () => {
-    if (!roomName) return;
+    if (!roomName || winner) return;
     setPreviewBoard([]);
     if (!positionSelected) return;
     const position = {

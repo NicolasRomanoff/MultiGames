@@ -11,4 +11,5 @@ export abstract class Game<TGame extends TGamesSchema> implements IGame<TGame> {
   abstract sendState: IGame<TGame>["sendState"];
   abstract getPiece: IGame<TGame>["getPiece"];
   abstract handleTimers: IGame<TGame>["handleTimers"];
+  abstract getIsDone: IGame<TGame>["getIsDone"];
 }

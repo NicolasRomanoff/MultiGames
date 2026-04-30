@@ -1,10 +1,4 @@
-import {
-  differenceInMilliseconds,
-  getHours,
-  getMinutes,
-  getSeconds,
-  subMilliseconds,
-} from "date-fns";
+import { differenceInMilliseconds, getTime, subMilliseconds } from "date-fns";
 import { COLORS, PROMOTEPIECES } from "shared/constants";
 import type {
   TColorsSchema,
@@ -37,12 +31,14 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly pieces: Map<TTypeLabel<TPiecesSchema>, ChessPiece> =
     new Map();
   private colorToPlay: TColorsSchema = COLORS.WHITE;
-  private readonly millisecondsForPlayer = 10 * 60 * 1000;
+  // private readonly millisecondsForPlayer = 10 * 60 * 1000;
+  private readonly millisecondsForPlayer = 10 * 1000;
   private readonly timers = {
     turnStart: new Date(),
     white: new Date(this.millisecondsForPlayer),
     black: new Date(this.millisecondsForPlayer),
   };
+  private isDone: boolean = false;
 
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -133,19 +129,32 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     return piece;
   };
 
-  handleTimers: IGame<"chess">["handleTimers"] = () => {
-    const whiteHours = getHours(this.timers.white);
-    const whiteMinutes = getMinutes(this.timers.white);
-    const whiteSeconds = getSeconds(this.timers.white);
-    const whiteTimer = (whiteHours * 60 + whiteMinutes) * 60 + whiteSeconds;
-    if (whiteTimer <= 0) console.log("white end");
-
-    const blackHours = getHours(this.timers.black);
-    const blackMinutes = getMinutes(this.timers.black);
-    const blackSeconds = getSeconds(this.timers.black);
-    const blackTimer = (blackHours * 60 + blackMinutes) * 60 + blackSeconds;
-    if (blackTimer <= 0) console.log("black end");
+  private sendWinnerMessage = (winner: TColorsSchema) => {
+    for (const player of this.gameInfo.players) {
+      player.socketHandler.sendChessWinner(winner);
+    }
   };
+
+  handleTimers: IGame<"chess">["handleTimers"] = () => {
+    const timestampNow = getTime(new Date());
+    const timestampTurn = getTime(this.timers.turnStart);
+    const timestampDiff = timestampNow - timestampTurn;
+
+    const whiteTimer = getTime(this.timers.white);
+    if (timestampDiff >= whiteTimer) {
+      this.isDone = true;
+      this.sendWinnerMessage(COLORS.BLACK);
+      return;
+    }
+
+    const blackTimer = getTime(this.timers.black);
+    if (timestampDiff >= blackTimer) {
+      this.isDone = true;
+      this.sendWinnerMessage(COLORS.WHITE);
+    }
+  };
+
+  getIsDone: IGame<"chess">["getIsDone"] = () => this.isDone;
 
   private updateAllPawnState = (color: TColorsSchema) => {
     for (let x = 0; x <= 7; x++) {
