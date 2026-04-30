@@ -107,7 +107,11 @@ const Chess = () => {
 
   return (
     <div className="flex flex-col w-full items-center justify-center">
-      {!!winner && <p className="text-white">{`The winner is ${winner}`}</p>}
+      {!!winner && (
+        <p className="text-white">
+          {winner === "pat" ? winner : `The winner is ${winner}`}
+        </p>
+      )}
       <Pendulum color={isSecondPlayer ? COLORS.WHITE : COLORS.BLACK} />
       <ChessBoard />
       <Pendulum color={isSecondPlayer ? COLORS.BLACK : COLORS.WHITE} />

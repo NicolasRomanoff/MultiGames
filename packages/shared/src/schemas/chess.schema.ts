@@ -44,6 +44,9 @@ export const chessTimers = z.object({
 });
 export type TChessTimers = z.infer<typeof chessTimers>;
 
+export const winnerSchema = z.union([colorsSchema, z.literal("pat")]);
+export type TWinnerSchema = z.infer<typeof winnerSchema>;
+
 export const boardSchema = z.array(
   z.array(z.union([typeAndColorSchema, z.null()])),
 );

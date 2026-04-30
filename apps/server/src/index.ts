@@ -118,6 +118,7 @@ server.on("connection", (socket) => {
       if (isSuccess) {
         game.switchPlayerToPlay();
         game.sendState();
+        if (game.isCheckMateOrPat()) game.sendWinnerMessage();
       }
     },
   });
@@ -136,6 +137,7 @@ server.on("connection", (socket) => {
       game.promote(position, to, select);
       game.switchPlayerToPlay();
       game.sendState();
+      if (game.isCheckMateOrPat()) game.sendWinnerMessage();
     },
   });
 

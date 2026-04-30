@@ -3,10 +3,10 @@ import {
   boardPreviewSchema,
   boardSchema,
   chessTimers,
-  colorsSchema,
   positionSchema,
   promoteSchema,
   wantPromoteSchema,
+  winnerSchema,
 } from "../schemas/chess.schema.js";
 import {
   GamesSchema,
@@ -68,7 +68,7 @@ export const events = {
   [EVENTS.CHESS.WANTPROMOTE]: createEvent(wantPromoteSchema),
   [EVENTS.CHESS.PROMOTE]: createEvent(promoteSchema),
   [EVENTS.CHESS.TIMERS]: createEvent(chessTimers),
-  [EVENTS.CHESS.WINNER]: createEvent(z.object({ winner: colorsSchema })),
+  [EVENTS.CHESS.WINNER]: createEvent(z.object({ winner: winnerSchema })),
 } as const satisfies Record<TEventValue, unknown>;
 
 export const socketMethod = ["on", "emit"] as const;

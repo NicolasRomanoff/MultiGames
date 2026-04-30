@@ -5,6 +5,7 @@ import type {
   TPiecesSchema,
   TPositionSchema,
   TPromotePiecesSchema,
+  TWinnerSchema,
 } from "shared/schemas";
 import {
   MOVES,
@@ -31,14 +32,13 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
   private readonly pieces: Map<TTypeLabel<TPiecesSchema>, ChessPiece> =
     new Map();
   private colorToPlay: TColorsSchema = COLORS.WHITE;
-  // private readonly millisecondsForPlayer = 10 * 60 * 1000;
-  private readonly millisecondsForPlayer = 10 * 1000;
+  private readonly millisecondsForPlayer = 10 * 60 * 1000;
   private readonly timers = {
     turnStart: new Date(),
     white: new Date(this.millisecondsForPlayer),
     black: new Date(this.millisecondsForPlayer),
   };
-  private isDone: boolean = false;
+  private winner: TWinnerSchema | null = null;
 
   constructor(gameInfo: TGameInfo) {
     super(gameInfo);
@@ -129,9 +129,10 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     return piece;
   };
 
-  private sendWinnerMessage = (winner: TColorsSchema) => {
+  sendWinnerMessage = () => {
+    if (!this.winner) return;
     for (const player of this.gameInfo.players) {
-      player.socketHandler.sendChessWinner(winner);
+      player.socketHandler.sendChessWinner(this.winner);
     }
   };
 
@@ -142,23 +143,24 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
 
     const whiteTimer = getTime(this.timers.white);
     if (timestampDiff >= whiteTimer) {
-      this.isDone = true;
-      this.sendWinnerMessage(COLORS.BLACK);
+      this.winner = COLORS.BLACK;
+      this.sendWinnerMessage();
       return;
     }
 
     const blackTimer = getTime(this.timers.black);
     if (timestampDiff >= blackTimer) {
-      this.isDone = true;
-      this.sendWinnerMessage(COLORS.WHITE);
+      this.winner = COLORS.WHITE;
+      this.sendWinnerMessage();
     }
   };
 
-  getIsDone: IGame<"chess">["getIsDone"] = () => this.isDone;
+  getIsDone: IGame<"chess">["getIsDone"] = () => !!this.winner;
 
   private updateAllPawnState = (color: TColorsSchema) => {
     for (let x = 0; x <= 7; x++) {
       const pawn = this.pieces.get(`${color}-${x}-pawn`);
+      if (!pawn) continue;
       if (!(pawn instanceof Pawn)) throw new Error("Invalid board");
       pawn.updatePawnState();
     }
@@ -274,6 +276,8 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
       }
     }
     this.board[position.y][position.x] = null;
+    const pieceEaten = this.board[to.y][to.x];
+    if (pieceEaten) this.pieces.delete(pieceEaten.getTypeLabel());
     this.board[to.y][to.x] = piece;
     piece.move(to);
     this.updateAllPawnState(
@@ -313,6 +317,8 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     if (!movePreview) return;
     this.board[position.y][position.x] = null;
     const newPiece = this.createNewPiecePromote(select, piece.getColor(), to);
+    const pieceEaten = this.board[to.y][to.x];
+    if (pieceEaten) this.pieces.delete(pieceEaten.getTypeLabel());
     this.board[to.y][to.x] = newPiece;
     this.updateAllPawnState(
       piece.getColor() === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE,
@@ -341,5 +347,25 @@ export class Chess extends Game<"chess"> implements IGame<"chess"> {
     }
 
     this.timers.turnStart = new Date();
+  };
+
+  isCheckMateOrPat = () => {
+    const color = this.colorToPlay;
+    const king = this.pieces.get(`${color}-king`);
+    if (!king) throw new Error("Invalid board");
+
+    for (const [_, piece] of this.pieces) {
+      if (piece.getColor() !== color) continue;
+      const preview = piece.getPreview(this.board);
+      const newPreview = this.removeCheckPosition(piece, preview);
+      if (newPreview.length) return false;
+    }
+
+    this.winner = COLORS.WHITE === color ? COLORS.BLACK : COLORS.WHITE;
+
+    const threatenedCases = Chess.getThreatenedCases(this.board, color);
+    if (!threatenedCases.get(king.getPositionLabel())) this.winner = "pat";
+
+    return true;
   };
 }

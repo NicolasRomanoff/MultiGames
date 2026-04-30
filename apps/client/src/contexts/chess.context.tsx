@@ -4,9 +4,9 @@ import type {
   TBoardSchema,
   TChessRoomNameSchema,
   TChessTimers,
-  TColorsSchema,
   TPositionSchema,
   TWantPromoteSchema,
+  TWinnerSchema,
 } from "shared/schemas";
 
 type TChessContext = {
@@ -28,8 +28,8 @@ type TChessContext = {
       | ((prev: TChessTimers | null) => TChessTimers | null)
       | null,
   ) => void;
-  winner: TColorsSchema | null;
-  setWinner: (winner: TColorsSchema | null) => void;
+  winner: TWinnerSchema | null;
+  setWinner: (winner: TWinnerSchema | null) => void;
 };
 
 export const ChessContext = createContext<TChessContext | null>(null);
