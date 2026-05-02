@@ -1,0 +1,7 @@
+dist
+node_modules
+__tests__
+.github
+.vscode
+.gitignore
+README.md

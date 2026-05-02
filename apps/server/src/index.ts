@@ -32,16 +32,6 @@ const server = new Server(httpServer);
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
 
-const handleServerShutdown = () => {
-  gameManager.clearGameManagerInterval();
-};
-
-process.once("exit", handleServerShutdown);
-process.once("SIGINT", handleServerShutdown);
-process.once("SIGTERM", handleServerShutdown);
-process.once("SIGKILL", handleServerShutdown);
-process.once("SIGHUP", handleServerShutdown);
-
 server.on("connection", (socket) => {
   const socketHandler = new SocketHandler(socket);
   const player = new Player(socketHandler);

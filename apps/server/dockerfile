@@ -1,0 +1,32 @@
+FROM node:24 AS builder
+
+RUN corepack enable
+
+WORKDIR /multigames
+
+COPY . .
+
+RUN pnpm i --frozen-lockfile
+RUN pnpm --filter "server..." --filter client build
+
+FROM node:24-alpine
+
+ENV NODE_ENV=PROD
+
+WORKDIR /multigames
+
+COPY --from=builder /multigames/node_modules node_modules
+
+WORKDIR /multigames/packages/shared
+
+COPY --from=builder /multigames/packages/shared/dist dist
+COPY --from=builder /multigames/packages/shared/node_modules node_modules
+COPY --from=builder /multigames/packages/shared/package.json package.json
+
+WORKDIR /multigames/apps/server
+
+COPY --from=builder /multigames/apps/server/dist dist
+COPY --from=builder /multigames/apps/server/node_modules node_modules
+COPY --from=builder /multigames/apps/server/package.json package.json
+
+CMD ["node", "/multigames/apps/server/dist/src/index.js"]
