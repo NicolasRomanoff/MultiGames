@@ -1,4 +1,4 @@
-import type { TGames } from "shared/types";
+import type { TChessRoomNameSchema, TGamesSchema } from "shared/schemas";
 import { describe, expect, it } from "vitest";
 import { GameManager } from "../../../src/classes/game-manager/GameManager.js";
 import type { IGameManager } from "../../../src/classes/game-manager/IGameManager.js";
@@ -23,8 +23,8 @@ describe("GameManager", () => {
 
   it("add/find game", () => {
     const gameInfo = {
-      type: "chess" as TGames,
-      roomName: "roomName-test",
+      type: "chess" as TGamesSchema,
+      roomName: "chess-test" as TChessRoomNameSchema,
       players: [getPlayerMock(), getPlayerMock()],
     };
     const newGame = GameManager.createNewGame(gameInfo);

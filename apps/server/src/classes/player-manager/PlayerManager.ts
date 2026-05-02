@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import type { TRoomNameSchema } from "shared/schemas";
 import type { IPlayer } from "../player/IPlayer.js";
 import type { IPlayerManager } from "./IPlayerManager.js";
 
@@ -22,7 +23,7 @@ export class PlayerManager implements IPlayerManager {
     );
     if (players.length < 2) return null;
 
-    const roomName = `${game}-${randomUUID()}`;
+    const roomName = `${game}-${randomUUID()}` as TRoomNameSchema;
     const playersOfTheGame = players.slice(0, 2);
     for (const player of playersOfTheGame) {
       player.socketHandler.join(roomName);

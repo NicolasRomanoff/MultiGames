@@ -1,5 +1,4 @@
 import { EVENTS, handleSocketEvent } from "shared/socket";
-import type { TBoard } from "shared/types";
 import type { Socket } from "socket.io";
 import type { ISocketHandler } from "./ISocketHandler.js";
 
@@ -16,12 +15,51 @@ export class SocketHandler implements ISocketHandler {
     });
   };
 
-  sendChessState: ISocketHandler["sendChessState"] = (board: TBoard) => {
+  sendChessState: ISocketHandler["sendChessState"] = ({
+    isSecondPlayer,
+    board,
+  }) => {
     handleSocketEvent({
       socket: this.socket,
       socketMethod: "emit",
       event: EVENTS.CHESS.BOARD,
-      args: { board },
+      args: { isSecondPlayer, board },
+    });
+  };
+
+  sendChessPreview: ISocketHandler["sendChessPreview"] = (preview) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.PREVIEW,
+      args: { preview },
+    });
+  };
+
+  sendPromoteSuggest: ISocketHandler["sendPromoteSuggest"] = (position, to) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.WANTPROMOTE,
+      args: { position, to },
+    });
+  };
+
+  sendChessTimers: ISocketHandler["sendChessTimers"] = (timers) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.TIMERS,
+      args: timers,
+    });
+  };
+
+  sendChessWinner: ISocketHandler["sendChessWinner"] = (winner) => {
+    handleSocketEvent({
+      socket: this.socket,
+      socketMethod: "emit",
+      event: EVENTS.CHESS.WINNER,
+      args: { winner },
     });
   };
 }

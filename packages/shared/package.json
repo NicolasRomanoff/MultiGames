@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "clear": "rm -rf node_modules"
+    "dev": "tsc -w",
+    "build": "tsc -b",
+    "clear": "rm -rf node_modules dist"
   },
   "keywords": [],
   "author": "",
@@ -14,19 +16,23 @@
   "exports": {
     "./constants": {
       "types": "./src/constants/index.ts",
-      "import": "./src/constants/index.ts"
+      "import": "./dist/constants/index.js"
+    },
+    "./schemas": {
+      "types": "./src/schemas/index.ts",
+      "import": "./dist/schemas/index.js"
     },
     "./socket": {
       "types": "./src/socket/index.ts",
-      "import": "./src/socket/index.ts"
+      "import": "./dist/socket/index.js"
     },
     "./types": {
       "types": "./src/types/index.ts",
-      "import": "./src/types/index.ts"
+      "import": "./dist/types/index.js"
     },
     "./utils": {
       "types": "./src/utils/index.ts",
-      "import": "./src/utils/index.ts"
+      "import": "./dist/utils/index.js"
     }
   },
   "packageManager": "pnpm@10.13.1",
@@ -34,5 +40,8 @@
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }

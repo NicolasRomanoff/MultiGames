@@ -9,9 +9,14 @@ import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
 
 const app = new Hono();
 
-app.get("/", (c) => {
+app.get("/api/", (c) => {
   return c.text("Hello Hono!");
 });
+
+if (process.env.NODE_ENV === "PROD") {
+  const { serveStatic } = await import("@hono/node-server/serve-static"); // Windows patch
+  app.use(serveStatic({ root: "./dist/public" }));
+}
 
 const httpServer = serve(
   {
@@ -26,6 +31,16 @@ const httpServer = serve(
 const server = new Server(httpServer);
 const playerManager = new PlayerManager();
 const gameManager = new GameManager();
+
+const handleServerShutdown = () => {
+  gameManager.clearGameManagerInterval();
+};
+
+process.once("exit", handleServerShutdown);
+process.once("SIGINT", handleServerShutdown);
+process.once("SIGTERM", handleServerShutdown);
+process.once("SIGKILL", handleServerShutdown);
+process.once("SIGHUP", handleServerShutdown);
 
 server.on("connection", (socket) => {
   const socketHandler = new SocketHandler(socket);
@@ -63,6 +78,66 @@ server.on("connection", (socket) => {
       const game = gameManager.findGame(roomName);
       if (!game) return;
       game.sendState();
+    },
+  });
+
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.SELECTION,
+    args: ({ roomName, piecePosition }) => {
+      const game = gameManager.findGame(roomName);
+      if (!game) return;
+      const chessPiece = game.getPiece(piecePosition);
+      if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      const piecePreview = chessPiece.getPreview(game.getBoard());
+      const piecePreviewVerified = game.removeCheckPosition(
+        chessPiece,
+        piecePreview,
+      );
+      if (!piecePreviewVerified.length) return;
+      player.socketHandler.sendChessPreview(
+        piecePreviewVerified.map((preview) => preview.position),
+      );
+    },
+  });
+
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.MOVE,
+    args: ({ roomName, position, to }) => {
+      const game = gameManager.findGame(roomName);
+      if (!game) return;
+      const chessPiece = game.getPiece(position);
+      if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      if (game.getPlayerColor(player) !== game.getColorToPlay()) return;
+      const isSuccess = game.movePiece(position, to);
+      if (isSuccess) {
+        game.switchPlayerToPlay();
+        game.sendState();
+        if (game.isCheckMateOrPat()) game.sendWinnerMessage();
+      }
+    },
+  });
+
+  handleSocketEvent({
+    socket,
+    socketMethod: "on",
+    event: EVENTS.CHESS.PROMOTE,
+    args: ({ roomName, position, to, select }) => {
+      const game = gameManager.findGame(roomName);
+      if (!game) return;
+      const chessPiece = game.getPiece(position);
+      if (!chessPiece) return;
+      if (game.getPlayerColor(player) !== chessPiece.getColor()) return;
+      if (game.getPlayerColor(player) !== game.getColorToPlay()) return;
+      game.promote(position, to, select);
+      game.switchPlayerToPlay();
+      game.sendState();
+      if (game.isCheckMateOrPat()) game.sendWinnerMessage();
     },
   });
 

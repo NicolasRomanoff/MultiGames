@@ -5,12 +5,10 @@ import {
   ChessPawn,
   ChessQueen,
   ChessRook,
-  type LucideIcon,
 } from "lucide-react";
 import { PIECES } from "shared/constants";
-import type { TPiece } from "shared/types";
 
-export const pieceIcons: Record<TPiece, LucideIcon> = {
+export const pieceIcons = {
   [PIECES.PAWN]: ChessPawn,
   [PIECES.BISHOP]: ChessBishop,
   [PIECES.KING]: ChessKing,

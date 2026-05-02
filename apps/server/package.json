@@ -5,15 +5,18 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "lint": "eslint .",
-    "start": "node dist/index.js",
+    "start": "set NODE_ENV=PROD&& node dist/src/index.js",
     "clear": "rm -rf node_modules dist",
     "test": "vitest"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
-    "shared": "workspace:*",
+    "date-fns": "^4.1.0",
     "hono": "^4.12.12",
-    "socket.io": "^4.8.3"
+    "shared": "workspace:*",
+    "socket.io": "^4.8.3",
+    "uuid": "^14.0.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
