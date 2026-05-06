@@ -29,4 +29,6 @@ COPY --from=builder /multigames/apps/server/dist dist
 COPY --from=builder /multigames/apps/server/node_modules node_modules
 COPY --from=builder /multigames/apps/server/package.json package.json
 
+RUN apk --no-cache add curl
+
 CMD ["node", "/multigames/apps/server/dist/src/index.js"]
