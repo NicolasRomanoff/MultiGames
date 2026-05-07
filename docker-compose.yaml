@@ -4,9 +4,9 @@ services:
       dockerfile: ./apps/server/dockerfile
       context: .
     ports:
-      - 3000
+      - ${PUBLIC_SERVER_PORT}
     healthcheck:
-      test: ["CMD", "curl", "http://localhost:3000/api/"]
+      test: ["CMD", "curl", "http://localhost:${PUBLIC_SERVER_PORT}/api/"]
       interval: 1m30s
       timeout: 30s
       retries: 5

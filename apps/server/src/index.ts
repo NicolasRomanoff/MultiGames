@@ -6,6 +6,7 @@ import { GameManager } from "./classes/game-manager/GameManager.js";
 import { PlayerManager } from "./classes/player-manager/PlayerManager.js";
 import { Player } from "./classes/player/Player.js";
 import { SocketHandler } from "./classes/socket-handler/SocketHandler.js";
+import { env } from "./utils/env.utils.js";
 
 const app = new Hono();
 
@@ -21,7 +22,7 @@ if (process.env.NODE_ENV === "PROD") {
 const httpServer = serve(
   {
     fetch: app.fetch,
-    port: 3000,
+    port: env.PUBLIC_SERVER_PORT,
   },
   (info) => {
     console.log(`Server is running on http://localhost:${info.port}`);
