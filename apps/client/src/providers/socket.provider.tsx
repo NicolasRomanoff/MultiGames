@@ -6,7 +6,7 @@ import { env } from "../lib/utils/env.utils";
 export const SocketProvider: React.FC<ComponentProps<"div">> = ({
   children,
 }) => {
-  const socket = io(`${env.PUBLIC_SERVER_URL}:${env.PUBLIC_SERVER_PORT}`, {
+  const socket = io(env.PUBLIC_SERVER_URL, {
     transports: ["websocket"],
   });
 

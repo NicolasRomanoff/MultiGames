@@ -5,9 +5,9 @@ services:
       context: .
     env_file: .env
     ports:
-      - ${PUBLIC_SERVER_PORT}
+      - 3000
     healthcheck:
-      test: ["CMD", "curl", "http://localhost:${PUBLIC_SERVER_PORT}/api/"]
+      test: ["CMD", "curl", "http://localhost:3000/api/"]
       interval: 1m30s
       timeout: 30s
       retries: 5
